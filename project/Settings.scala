@@ -7,7 +7,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
  */
 object Settings {
   /** The name of your application */
-  val name = "scalajs-spa"
+  val name = "lehtikierto"
 
   /** The version of your application */
   val version = "1.1.5"
