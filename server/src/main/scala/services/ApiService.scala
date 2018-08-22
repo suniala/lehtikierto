@@ -2,7 +2,7 @@ package services
 
 import java.util.{UUID, Date}
 
-import spatutorial.shared._
+import lehtikierto.shared._
 
 class ApiService extends Api {
   var todos = Seq(

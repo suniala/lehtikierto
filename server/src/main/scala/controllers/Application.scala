@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import play.api.{Configuration, Environment}
 import play.api.mvc._
 import services.ApiService
-import spatutorial.shared.Api
+import lehtikierto.shared.Api
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
