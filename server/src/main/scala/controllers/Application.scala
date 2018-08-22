@@ -1,19 +1,20 @@
 package controllers
 
-import java.nio.ByteBuffer
-
-import boopickle.Default._
-import com.google.inject.Inject
-import play.api.{Configuration, Environment}
-import play.api.mvc._
-import services.ApiService
-import lehtikierto.shared.Api
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object Router extends autowire.Server[ByteBuffer, Pickler, Pickler] {
-  override def read[R: Pickler](p: ByteBuffer) = Unpickle[R].fromBytes(p)
-  override def write[R: Pickler](r: R) = Pickle.intoBytes(r)
+import com.google.inject.Inject
+
+import lehtikierto.shared.Api
+import play.api.Configuration
+import play.api.Environment
+import play.api.mvc.Action
+import play.api.mvc.Controller
+import services.ApiService
+import upickle.Js
+
+object Router extends autowire.Server[Js.Value, upickle.Reader, upickle.Writer] {
+  def read[R: upickle.Reader](p: Js.Value) = upickle.readJs[R](p)
+  def write[R: upickle.Writer](r: R) = upickle.writeJs(r)
 }
 
 class Application @Inject() (implicit val config: Configuration, env: Environment) extends Controller {
@@ -23,20 +24,17 @@ class Application @Inject() (implicit val config: Configuration, env: Environmen
     Ok(views.html.index("SPA tutorial"))
   }
 
-  def autowireApi(path: String) = Action.async(parse.raw) {
+  def autowireApi(path: String) = Action.async(parse.tolerantText) {
     implicit request =>
       println(s"Request path: $path")
 
-      // get the request body as ByteString
-      val b = request.body.asBytes(parse.UNLIMITED).get
-
       // call Autowire route
-      Router.route[Api](apiService)(
-        autowire.Core.Request(path.split("/"), Unpickle[Map[String, ByteBuffer]].fromBytes(b.asByteBuffer))
-      ).map(buffer => {
-        val data = Array.ofDim[Byte](buffer.remaining())
-        buffer.get(data)
-        Ok(data)
+      Router.route[Api](apiService)({
+        val unpickledBody = upickle.json.read(request.body).asInstanceOf[Js.Obj].value.toMap
+        val pathParts = path.split("/")
+        autowire.Core.Request(pathParts, unpickledBody)
+      }).map(resValue => {
+        Ok(upickle.json.write(resValue)).as("application/json")
       })
   }
 

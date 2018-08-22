@@ -1,24 +1,25 @@
 package lehtikierto.client.services
 
-import java.nio.ByteBuffer
+import scala.concurrent.Future
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-import boopickle.Default._
 import org.scalajs.dom
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.scalajs.js.typedarray._
+import upickle.Js
+import upickle.Reader
+import upickle.Writer
+import upickle.json
 
-object AjaxClient extends autowire.Client[ByteBuffer, Pickler, Pickler] {
-  override def doCall(req: Request): Future[ByteBuffer] = {
+object AjaxClient extends autowire.Client[Js.Value, Reader, Writer] {
+  override def doCall(req: Request): Future[Js.Value] = {
+    println(req)
     dom.ext.Ajax.post(
       url = "/api/" + req.path.mkString("/"),
-      data = Pickle.intoBytes(req.args),
-      responseType = "arraybuffer",
-      headers = Map("Content-Type" -> "application/octet-stream")
-    ).map(r => TypedArrayBuffer.wrap(r.response.asInstanceOf[ArrayBuffer]))
+      headers = Map("Content-Type" -> "application/json"),
+      data = json.write(Js.Obj(req.args.toSeq: _*))).map(_.responseText)
+      .map(json.read)
   }
 
-  override def read[Result: Pickler](p: ByteBuffer) = Unpickle[Result].fromBytes(p)
-  override def write[Result: Pickler](r: Result) = Pickle.intoBytes(r)
+  def read[R: Reader](p: Js.Value) = upickle.readJs[R](p)
+  def write[R: Writer](r: R) = upickle.writeJs(r)
 }

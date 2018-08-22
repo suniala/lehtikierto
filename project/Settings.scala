@@ -28,7 +28,7 @@ object Settings {
     val scalaCSS = "0.5.3"
     val log4js = "1.4.10"
     val autowire = "0.2.6"
-    val booPickle = "1.2.6"
+    val upickle = "0.2.7"
     val diode = "1.1.2"
     val uTest = "0.4.7"
 
@@ -46,7 +46,7 @@ object Settings {
    */
   val sharedDependencies = Def.setting(Seq(
     "com.lihaoyi" %%% "autowire" % versions.autowire,
-    "io.suzaku" %%% "boopickle" % versions.booPickle
+    "com.lihaoyi" %%% "upickle" % versions.upickle
   ))
 
   /** Dependencies only used by the JVM project */

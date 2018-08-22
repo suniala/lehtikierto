@@ -6,7 +6,6 @@ import diode.data._
 import diode.util._
 import diode.react.ReactConnector
 import lehtikierto.shared.{TodoItem, Api}
-import boopickle.Default._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
 // Actions
