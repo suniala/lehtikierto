@@ -5,6 +5,11 @@ import java.util.{UUID, Date}
 import lehtikierto.shared._
 
 class ApiService extends Api {
+  val magazines = Seq(
+      Magazine("1", "Yölehti"),
+      Magazine("2", "Koillis-Pirkanmaa")
+  )
+      
   var todos = Seq(
     TodoItem("41424344-4546-4748-494a-4b4c4d4e4f50", 0x61626364, "Wear shirt that says “Life”. Hand out lemons on street corner.", TodoLow, completed = false),
     TodoItem("2", 0x61626364, "Make vanilla pudding. Put in mayo jar. Eat in public.", TodoNormal, completed = false),
@@ -12,6 +17,8 @@ class ApiService extends Api {
     TodoItem("4", 0x61626364, "Sneeze in front of the pope. Get blessed.", TodoNormal, completed = true)
   )
 
+  override def getAllMagazines(): Seq[Magazine] = magazines
+  
   override def welcomeMsg(name: String): String =
     s"Welcome to SPA, $name! Time is now ${new Date}"
 
