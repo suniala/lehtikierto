@@ -34,25 +34,13 @@ object SPAMain extends js.JSApp {
       ).notFound(redirectToPage(DashboardLoc)(Redirect.Replace))
   }.renderWith(layout)
 
-  val todoCountWrapper = SPACircuit.connect(_.todos.map(_.items.count(!_.completed)).toOption)
+  val userWrapper = SPACircuit.connect(_.user.toOption)
+  
   // base layout for all pages
   def layout(c: RouterCtl[Loc], r: Resolution[Loc]) = {
-    <.div(
-      // here we use plain Bootstrap class names as these are specific to the top level layout defined here
-      <.nav(^.className := "navbar navbar-inverse navbar-fixed-top",
-        <.div(^.className := "container",
-          <.div(^.className := "navbar-header", <.span(^.className := "navbar-brand", "SPA Tutorial")),
-          <.div(^.className := "collapse navbar-collapse",
-            // connect menu to model, because it needs to update when the number of open todos changes
-            todoCountWrapper(proxy => MainMenu(c, r.page, proxy))
-          )
-        )
-      ),
-      // currently active module is shown in this container
-      <.div(^.className := "container", r.render())
-    )
+    userWrapper(userProxy => Layout(c, r, userProxy))
   }
-
+  
   @JSExport
   def main(): Unit = {
     log.warn("Application starting")

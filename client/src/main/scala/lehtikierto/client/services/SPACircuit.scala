@@ -7,6 +7,7 @@ import diode.util._
 import diode.react.ReactConnector
 import lehtikierto.shared.{TodoItem, Api}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+import lehtikierto.shared.User
 
 // Actions
 case object RefreshTodos extends Action
@@ -22,7 +23,7 @@ case class UpdateMotd(potResult: Pot[String] = Empty) extends PotAction[String, 
 }
 
 // The base model of our application
-case class RootModel(todos: Pot[Todos], motd: Pot[String])
+case class RootModel(user: Pot[User], todos: Pot[Todos], motd: Pot[String])
 
 case class Todos(items: Seq[TodoItem]) {
   def updated(newItem: TodoItem) = {
@@ -77,7 +78,7 @@ class MotdHandler[M](modelRW: ModelRW[M, Pot[String]]) extends ActionHandler(mod
 // Application circuit
 object SPACircuit extends Circuit[RootModel] with ReactConnector[RootModel] {
   // initial application model
-  override protected def initialModel = RootModel(Empty, Empty)
+  override protected def initialModel = RootModel(Ready(User("teppo")), Empty, Empty)
   // combine all handlers into one
   override protected val actionHandler = composeHandlers(
     new TodoHandler(zoomRW(_.todos)((m, v) => m.copy(todos = v))),

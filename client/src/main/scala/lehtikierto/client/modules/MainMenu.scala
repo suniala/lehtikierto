@@ -40,7 +40,7 @@ object MainMenu {
       Callback.when(props.proxy.value.isEmpty)(props.proxy.dispatchCB(RefreshTodos))
 
     def render(props: Props) = {
-      <.ul(bss.navbar)(
+      <.ul(bss.navbar.left)(
         // build a list of menu items
         menuItems.toVdomArray(item =>
           <.li(^.key := item.idx, (^.className := "active").when(props.currentLoc == item.location),
