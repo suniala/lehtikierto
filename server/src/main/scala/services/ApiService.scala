@@ -5,6 +5,9 @@ import java.util.{UUID, Date}
 import lehtikierto.shared._
 
 class ApiService extends Api {
+  val user = Some(User("Teppo"))
+  //val user = None
+  
   val magazines = Seq(
       Magazine("1", "Yölehti"),
       Magazine("2", "Koillis-Pirkanmaa")
@@ -17,6 +20,8 @@ class ApiService extends Api {
     TodoItem("4", 0x61626364, "Sneeze in front of the pope. Get blessed.", TodoNormal, completed = true)
   )
 
+  override def getUser(): Option[User] = user
+  
   override def getAllMagazines(): Seq[Magazine] = magazines
   
   override def welcomeMsg(name: String): String =

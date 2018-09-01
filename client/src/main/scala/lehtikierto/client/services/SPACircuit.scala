@@ -10,6 +10,9 @@ import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import lehtikierto.shared.User
 
 // Actions
+case object FetchUser extends Action
+case class ReceiveUser(user: Option[User]) extends Action
+
 case object RefreshTodos extends Action
 
 case class UpdateAllTodos(todos: Seq[TodoItem]) extends Action
@@ -24,6 +27,18 @@ case class UpdateMotd(potResult: Pot[String] = Empty) extends PotAction[String, 
 
 // The base model of our application
 case class RootModel(user: Pot[User], todos: Pot[Todos], motd: Pot[String])
+
+class UserHandler[M](modelRW: ModelRW[M, Pot[User]]) extends ActionHandler(modelRW) {
+  override def handle = {
+    case FetchUser =>
+      effectOnly(Effect(AjaxClient[Api].getUser().call().map(ReceiveUser)))
+    case ReceiveUser(user) =>
+      updated(user match {
+        case Some(user) => Ready(user)
+        case _ => Empty
+      })
+  }
+}
 
 case class Todos(items: Seq[TodoItem]) {
   def updated(newItem: TodoItem) = {
@@ -78,9 +93,10 @@ class MotdHandler[M](modelRW: ModelRW[M, Pot[String]]) extends ActionHandler(mod
 // Application circuit
 object SPACircuit extends Circuit[RootModel] with ReactConnector[RootModel] {
   // initial application model
-  override protected def initialModel = RootModel(Ready(User("teppo")), Empty, Empty)
+  override protected def initialModel = RootModel(Empty, Empty, Empty)
   // combine all handlers into one
   override protected val actionHandler = composeHandlers(
+    new UserHandler(zoomRW(_.user)((m, v) => m.copy(user = v))),
     new TodoHandler(zoomRW(_.todos)((m, v) => m.copy(todos = v))),
     new MotdHandler(zoomRW(_.motd)((m, v) => m.copy(motd = v)))
   )

@@ -13,6 +13,8 @@ import lehtikierto.client.modules.MainMenu
 import lehtikierto.client.services.SPACircuit
 import lehtikierto.shared.User
 import scalacss.ScalaCssReact.scalacssStyleaToTagMod
+import lehtikierto.client.services.FetchUser
+import japgolly.scalajs.react.Callback
 
 object Layout {
   // shorthand for styles
@@ -23,10 +25,8 @@ object Layout {
   val todoCountWrapper = SPACircuit.connect(_.todos.map(_.items.count(!_.completed)).toOption)
 
   private class Backend($: BackendScope[Props, Unit]) {
-    // FIXME: dispatch a message to check if we have a user
-    //def mounted(props: Props) =
-      // dispatch a message to refresh the todos
-      //Callback.when(props.proxy.value.isEmpty)(props.proxy.dispatchCB(RefreshTodos))
+    def mounted(props: Props) =
+      Callback.when(props.userProxy.value.isEmpty)(props.userProxy.dispatchCB(FetchUser))
 
     def render(props: Props) = {
       if (props.userProxy().isDefined) {
@@ -47,6 +47,8 @@ object Layout {
           <.div(^.className := "container", props.res.render())
         )
       } else {
+        // FIXME: login form
+        // FIXME: distinguish between "no user yet", "fetching", "got user", "did not get user"
         <.div("Kirjaudu ensin!")
       }
     }
@@ -54,7 +56,7 @@ object Layout {
 
   private val component = ScalaComponent.builder[Props]("Layout")
     .renderBackend[Backend]
-    //.componentDidMount(scope => scope.backend.mounted(scope.props))
+    .componentDidMount(scope => scope.backend.mounted(scope.props))
     .build
 
   def apply(ctl: RouterCtl[Loc], res: Resolution[Loc], userProxy: ModelProxy[Option[User]]): VdomElement =

@@ -1,6 +1,8 @@
 package lehtikierto.shared
 
 trait Api {
+  def getUser(): Option[User]
+  
   def getAllMagazines(): Seq[Magazine]
   
   // message of the day
