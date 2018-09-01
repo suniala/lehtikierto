@@ -9,7 +9,6 @@ import lehtikierto.client.SPAMain.{Loc, TodoLoc}
 import lehtikierto.client.components._
 
 import scala.util.Random
-import scala.language.existentials
 
 object Dashboard {
 
