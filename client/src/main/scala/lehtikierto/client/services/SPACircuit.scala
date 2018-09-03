@@ -8,6 +8,8 @@ import diode.react.ReactConnector
 import lehtikierto.shared.{TodoItem, Api}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import lehtikierto.shared.User
+import scala.concurrent.duration.FiniteDuration
+import java.util.concurrent.TimeUnit
 
 // Actions
 case object FetchUser extends Action
@@ -86,7 +88,8 @@ class MotdHandler[M](modelRW: ModelRW[M, Pot[String]]) extends ActionHandler(mod
   override def handle = {
     case action: UpdateMotd =>
       val updateF = action.effect(AjaxClient[Api].welcomeMsg("User X").call())(identity _)
-      action.handleWith(this, updateF)(PotAction.handler())
+      // Handle with a handler that does progress updates every n milliseconds.
+      action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
 }
 

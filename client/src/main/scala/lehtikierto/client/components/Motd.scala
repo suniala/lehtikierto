@@ -18,9 +18,9 @@ object Motd {
     .render_P { proxy =>
       Panel(Panel.Props("Message of the day"),
         // render messages depending on the state of the Pot
-        proxy().renderPending(_ > 500, _ => <.p("Loading...")),
+        proxy().renderPending(_ => <.p("Loading...")),
         proxy().renderFailed(ex => <.p("Failed to load")),
-        proxy().render(m => <.p(m)),
+        proxy().renderReady(m => <.p(m)),
         Button(Button.Props(proxy.dispatchCB(UpdateMotd()), CommonStyle.danger), Icon.refresh, " Update")
       )
     }

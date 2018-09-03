@@ -24,8 +24,10 @@ class ApiService extends Api {
   
   override def getAllMagazines(): Seq[Magazine] = magazines
   
-  override def welcomeMsg(name: String): String =
+  override def welcomeMsg(name: String): String = {
+    Thread.sleep(1000)
     s"Welcome to SPA, $name! Time is now ${new Date}"
+  }
 
   override def getAllTodos(): Seq[TodoItem] = {
     // provide some fake Todos
