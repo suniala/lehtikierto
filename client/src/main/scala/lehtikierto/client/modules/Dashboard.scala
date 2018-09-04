@@ -8,7 +8,7 @@ import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.SPAMain.{Loc, TodoLoc}
 import lehtikierto.client.components._
 import lehtikierto.client.services.RootModel
-import lehtikierto.shared.{Magazine, Subscription}
+import lehtikierto.shared.{Magazine, Share, Subscription}
 
 import scala.util.Random
 
@@ -19,6 +19,7 @@ object Dashboard {
   case class State(
       magazinesWrapper: ReactConnectProxy[Pot[Seq[Magazine]]],
       subscriptionsWrapper: ReactConnectProxy[Pot[Seq[Subscription]]],
+      shareWrapper: ReactConnectProxy[Pot[Seq[Share]]],
       motdWrapper: ReactConnectProxy[Pot[String]])
 
   // create dummy data for the chart
@@ -37,12 +38,14 @@ object Dashboard {
     .initialStateFromProps(props => State(
         props.proxy.connect(m => m.magazines),
         props.proxy.connect(m => m.subscriptions),
+        props.proxy.connect(m => m.shares),
         props.proxy.connect(m => m.motd)
     ))
     .renderPS { (_, props, state) =>
       <.div(
         <.h2("Dashboard"),
         state.subscriptionsWrapper(SubscriptionList(_)),
+        state.shareWrapper(ShareList(_)),
         state.magazinesWrapper(MagazineList(_)),
         state.motdWrapper(Motd(_)),
         Chart(cp),

@@ -7,6 +7,8 @@ trait Api {
   
   def getSubscriptions(): Seq[Subscription]
   
+  def getShares(): Seq[Share]
+  
   // message of the day
   def welcomeMsg(name: String): String
 

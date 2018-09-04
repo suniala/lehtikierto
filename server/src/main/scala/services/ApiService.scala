@@ -7,25 +7,38 @@ import lehtikierto.shared._
 class ApiService extends Api {
   object DummyUsers {
     val teppo = User("Teppo");
+    val liisa = User("Liisa");
+    val jaakko = User("Jaakko");
   }
   
   object DummyMagazines {
-    val yolehti = Magazine("1", "Yölehti")
+    val yl = Magazine("1", "Yölehti")
     val kp = Magazine("2", "Koillis-Pirkanmaa")
+    val vv = Magazine("3", "Valtavirta")
+  }
+  
+  object DummyShares {
+    val teppoKp = Share("1", DummyUsers.teppo, DummyMagazines.kp)
+    val liisaKp = Share("2", DummyUsers.liisa, DummyMagazines.kp)
+    val liisaYl = Share("3", DummyUsers.liisa, DummyMagazines.yl)
   }
   
   val user = Some(DummyUsers.teppo)
+//  val user: Option[User] = None
   
   val allMagazines = Seq(
-      DummyMagazines.yolehti,
-      DummyMagazines.kp
+      DummyMagazines.yl,
+      DummyMagazines.kp,
+      DummyMagazines.vv
   )
-
+  
   val allSubscriptions = Map[User, Seq[Subscription]](
       DummyUsers.teppo -> Seq(
-          Subscription("1", DummyUsers.teppo, DummyMagazines.yolehti)
+          Subscription("1", DummyUsers.teppo, DummyMagazines.yl)
       )
   ) withDefaultValue Nil
+
+  val allShares = Seq(DummyShares.teppoKp, DummyShares.liisaKp, DummyShares.liisaYl)
   
   var todos = Seq(
     TodoItem("41424344-4546-4748-494a-4b4c4d4e4f50", 0x61626364, "Wear shirt that says “Life”. Hand out lemons on street corner.", TodoLow, completed = false),
@@ -45,6 +58,14 @@ class ApiService extends Api {
     Thread.sleep(900)
     user match {
       case Some(user) => allSubscriptions(user)
+      case _ => Nil
+    }
+  }
+
+  override def getShares(): Seq[Share] = {
+    Thread.sleep(300)
+    user match {
+      case Some(user) => allShares.filter(_.user == user)
       case _ => Nil
     }
   }
