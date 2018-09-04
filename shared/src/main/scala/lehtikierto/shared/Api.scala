@@ -5,6 +5,8 @@ trait Api {
   
   def getAllMagazines(): Seq[Magazine]
   
+  def getSubscriptions(): Seq[Subscription]
+  
   // message of the day
   def welcomeMsg(name: String): String
 

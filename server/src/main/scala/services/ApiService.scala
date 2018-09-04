@@ -5,14 +5,28 @@ import java.util.{UUID, Date}
 import lehtikierto.shared._
 
 class ApiService extends Api {
-  val user = Some(User("Teppo"))
-  //val user = None
+  object DummyUsers {
+    val teppo = User("Teppo");
+  }
   
-  val magazines = Seq(
-      Magazine("1", "Yölehti"),
-      Magazine("2", "Koillis-Pirkanmaa")
+  object DummyMagazines {
+    val yolehti = Magazine("1", "Yölehti")
+    val kp = Magazine("2", "Koillis-Pirkanmaa")
+  }
+  
+  val user = Some(DummyUsers.teppo)
+  
+  val allMagazines = Seq(
+      DummyMagazines.yolehti,
+      DummyMagazines.kp
   )
-      
+
+  val allSubscriptions = Map[User, Seq[Subscription]](
+      DummyUsers.teppo -> Seq(
+          Subscription("1", DummyUsers.teppo, DummyMagazines.yolehti)
+      )
+  ) withDefaultValue Nil
+  
   var todos = Seq(
     TodoItem("41424344-4546-4748-494a-4b4c4d4e4f50", 0x61626364, "Wear shirt that says “Life”. Hand out lemons on street corner.", TodoLow, completed = false),
     TodoItem("2", 0x61626364, "Make vanilla pudding. Put in mayo jar. Eat in public.", TodoNormal, completed = false),
@@ -22,7 +36,18 @@ class ApiService extends Api {
 
   override def getUser(): Option[User] = user
   
-  override def getAllMagazines(): Seq[Magazine] = magazines
+  override def getAllMagazines(): Seq[Magazine] = {
+    Thread.sleep(600)
+    allMagazines
+  }
+  
+  override def getSubscriptions(): Seq[Subscription] = {
+    Thread.sleep(900)
+    user match {
+      case Some(user) => allSubscriptions(user)
+      case _ => Nil
+    }
+  }
   
   override def welcomeMsg(name: String): String = {
     Thread.sleep(1000)

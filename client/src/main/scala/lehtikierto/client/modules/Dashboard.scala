@@ -7,14 +7,19 @@ import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.SPAMain.{Loc, TodoLoc}
 import lehtikierto.client.components._
+import lehtikierto.client.services.RootModel
+import lehtikierto.shared.{Magazine, Subscription}
 
 import scala.util.Random
 
 object Dashboard {
 
-  case class Props(router: RouterCtl[Loc], proxy: ModelProxy[Pot[String]])
+  case class Props(router: RouterCtl[Loc], proxy: ModelProxy[RootModel])
 
-  case class State(motdWrapper: ReactConnectProxy[Pot[String]])
+  case class State(
+      magazinesWrapper: ReactConnectProxy[Pot[Seq[Magazine]]],
+      subscriptionsWrapper: ReactConnectProxy[Pot[Seq[Subscription]]],
+      motdWrapper: ReactConnectProxy[Pot[String]])
 
   // create dummy data for the chart
   val cp = Chart.ChartProps(
@@ -29,11 +34,16 @@ object Dashboard {
   // create the React component for Dashboard
   private val component = ScalaComponent.builder[Props]("Dashboard")
     // create and store the connect proxy in state for later use
-    .initialStateFromProps(props => State(props.proxy.connect(m => m)))
+    .initialStateFromProps(props => State(
+        props.proxy.connect(m => m.magazines),
+        props.proxy.connect(m => m.subscriptions),
+        props.proxy.connect(m => m.motd)
+    ))
     .renderPS { (_, props, state) =>
       <.div(
-        // header, MessageOfTheDay and chart components
         <.h2("Dashboard"),
+        state.subscriptionsWrapper(SubscriptionList(_)),
+        state.magazinesWrapper(MagazineList(_)),
         state.motdWrapper(Motd(_)),
         Chart(cp),
         // create a link to the To Do view
@@ -42,5 +52,5 @@ object Dashboard {
     }
     .build
 
-  def apply(router: RouterCtl[Loc], proxy: ModelProxy[Pot[String]]) = component(Props(router, proxy))
+  def apply(router: RouterCtl[Loc], proxy: ModelProxy[RootModel]) = component(Props(router, proxy))
 }
