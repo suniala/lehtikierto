@@ -6,8 +6,8 @@ trait Api {
   def getAllMagazines(): Seq[Magazine]
   
   def getSubscriptions(): Seq[Subscription]
-  def addSubscription(magazineId: String): Subscription
-  def unsubscribe(subscriptionId: String): Boolean
+  def addSubscription(id: MagazineId): Subscription
+  def unsubscribe(id: SubscriptionId): Boolean
   
   def getShares(): Seq[Share]
   

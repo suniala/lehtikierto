@@ -1,3 +1,4 @@
 package lehtikierto.shared
 
-case class Subscription(id: String, user: User, magazine: Magazine)
+case class SubscriptionId(id: String)
+case class Subscription(id: SubscriptionId, user: User, magazine: Magazine)

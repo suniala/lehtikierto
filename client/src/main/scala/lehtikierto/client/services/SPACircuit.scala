@@ -10,6 +10,8 @@ import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import lehtikierto.shared.{User, Magazine, Share, Subscription}
 import scala.concurrent.duration.FiniteDuration
 import java.util.concurrent.TimeUnit
+import lehtikierto.shared.SubscriptionId
+import lehtikierto.shared.MagazineId
 
 // Actions
 case object FetchUser extends Action
@@ -22,8 +24,8 @@ case class UpdateMagazines(potResult: Pot[Seq[Magazine]] = Empty) extends PotAct
 case class UpdateSubscriptions(potResult: Pot[Seq[Subscription]] = Empty) extends PotAction[Seq[Subscription], UpdateSubscriptions] {
   override def next(value: Pot[Seq[Subscription]]) = UpdateSubscriptions(value)
 }
-case class AddSubscription(id: String) extends Action
-case class DeleteSubscription(id: String) extends Action
+case class AddSubscription(id: MagazineId) extends Action
+case class DeleteSubscription(id: SubscriptionId) extends Action
 
 case class UpdateShares(potResult: Pot[Seq[Share]] = Empty) extends PotAction[Seq[Share], UpdateShares] {
   override def next(value: Pot[Seq[Share]]) = UpdateShares(value)
