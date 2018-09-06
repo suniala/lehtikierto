@@ -39,7 +39,7 @@ object Layout {
               <.div(^.className := "navbar-header", <.span(^.className := "navbar-brand", "Lehtikierto, " + user.username)),
               <.div(^.className := "collapse navbar-collapse",
                 todoCountWrapper(todoProxy => MainMenu(props.router, props.res.page, todoProxy)),
-                <.ul(bss.navbar.right)(<.li(<.a(^.href := "/logout", "kirjaudu ulos")))
+                <.ul(bss.navbar, bss.navbarRight)(<.li(<.a(^.href := "/logout", "kirjaudu ulos")))
               )
             )
           ),
