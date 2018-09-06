@@ -8,6 +8,7 @@ import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.shared.Magazine
 import lehtikierto.client.services.UpdateMagazines
+import lehtikierto.client.services.AddSubscription
 
 object MagazineList {
   val MagazineList = ScalaComponent.builder[ModelProxy[Pot[Seq[Magazine]]]]("MagazineList")
@@ -16,7 +17,13 @@ object MagazineList {
         proxy().renderPending(_ => <.p("Ladataan...")),
         proxy().renderFailed(ex => <.p("Lehtien lataaminen epäonnistui!")),
         proxy().renderReady(m => <.ul(m.toTagMod(
-            magazine => <.li(magazine.name))))
+            magazine =>
+              <.li(
+                <.div(magazine.name),
+                <.div(
+                    Button(
+                        Button.Props(proxy.dispatchCB(AddSubscription(magazine.id)), CommonStyle.danger),
+                        "Tilaa"))))))
       )
     }
     .componentDidMount(scope =>

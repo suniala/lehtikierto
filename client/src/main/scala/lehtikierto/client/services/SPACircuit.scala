@@ -22,6 +22,8 @@ case class UpdateMagazines(potResult: Pot[Seq[Magazine]] = Empty) extends PotAct
 case class UpdateSubscriptions(potResult: Pot[Seq[Subscription]] = Empty) extends PotAction[Seq[Subscription], UpdateSubscriptions] {
   override def next(value: Pot[Seq[Subscription]]) = UpdateSubscriptions(value)
 }
+case class AddSubscription(id: String) extends Action
+case class DeleteSubscription(id: String) extends Action
 
 case class UpdateShares(potResult: Pot[Seq[Share]] = Empty) extends PotAction[Seq[Share], UpdateShares] {
   override def next(value: Pot[Seq[Share]]) = UpdateShares(value)
@@ -73,6 +75,10 @@ class SubscriptionHandler[M](modelRW: ModelRW[M, Pot[Seq[Subscription]]]) extend
       val updateF = action.effect(AjaxClient[Api].getSubscriptions().call())(identity _)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
+    case AddSubscription(magazineId) =>
+      effectOnly(Effect(AjaxClient[Api].addSubscription(magazineId).call().map(_ => UpdateSubscriptions())))
+    case DeleteSubscription(id) =>
+      effectOnly(Effect(AjaxClient[Api].unsubscribe(id).call().map(_ => UpdateSubscriptions())))
   }
 }
 
