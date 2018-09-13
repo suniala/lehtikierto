@@ -4,7 +4,7 @@ import diode.react.ModelProxy
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
-import lehtikierto.client.SPAMain.{DashboardLoc, Loc, TodoLoc}
+import lehtikierto.client.SPAMain.{DashboardLoc, Loc, TodoLoc, ShareLoc}
 import lehtikierto.client.components.Bootstrap.CommonStyle
 import lehtikierto.client.components.Icon._
 import lehtikierto.client.components._
@@ -31,7 +31,8 @@ object MainMenu {
 
   private val menuItems = Seq(
     MenuItem(1, _ => "Dashboard", Icon.dashboard, DashboardLoc),
-    MenuItem(2, buildTodoMenu, Icon.check, TodoLoc)
+    MenuItem(2, _ => "Jaa lehti", Icon.check, ShareLoc),
+    MenuItem(3, buildTodoMenu, Icon.check, TodoLoc)
   )
 
   private class Backend($: BackendScope[Props, Unit]) {

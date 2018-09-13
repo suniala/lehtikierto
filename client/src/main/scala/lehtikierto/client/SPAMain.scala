@@ -22,6 +22,8 @@ object SPAMain extends js.JSApp {
 
   case object DashboardLoc extends Loc
 
+  case object ShareLoc extends Loc
+  
   case object TodoLoc extends Loc
 
   // configure the router
@@ -31,6 +33,7 @@ object SPAMain extends js.JSApp {
     val todoWrapper = SPACircuit.connect(_.todos)
     // wrap/connect components to the circuit
     (staticRoute(root, DashboardLoc) ~> renderR(ctl => SPACircuit.wrap((m: RootModel) => m)(proxy => Dashboard(ctl, proxy)))
+      | staticRoute("#jaa", ShareLoc) ~> renderR(ctl => ShareView())
       | staticRoute("#todo", TodoLoc) ~> renderR(ctl => todoWrapper(Todo(_)))
       ).notFound(redirectToPage(DashboardLoc)(Redirect.Replace))
   }.renderWith(layout)
