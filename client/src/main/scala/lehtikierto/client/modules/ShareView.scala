@@ -19,7 +19,22 @@ object ShareView {
 
   case class Props(proxy: ModelProxy[Pot[Seq[Magazine]]])
 
-  case class State(magazine: Option[Magazine], year: Option[Int])
+  case class State(magazine: Option[Magazine], year: Option[Int], number: Option[String])
+
+  trait Phase {
+    def isDone(state: State): Boolean
+  }
+
+  val magazinePhase = new Phase() {
+    def isDone(state: State) = state.magazine.isDefined
+  }
+  val yearPhase = new Phase() {
+    def isDone(state: State) = state.year.isDefined
+  }
+  val numberPhase = new Phase() {
+    def isDone(state: State) = state.number.isDefined
+  }
+  val phases = Seq(magazinePhase, yearPhase, numberPhase)
 
   class Backend($: BackendScope[Props, State]) {
     def mounted(props: Props) =
@@ -28,6 +43,7 @@ object ShareView {
     def render(p: Props, s: State) = {
       val proxy = p.proxy
       val years = Seq(2018, 2017) // TODO: calculate appropriate years
+      val phaseResolver = (phase: Phase) => phase.isDone(s)
 
       def renderItem(item: Magazine) = {
         <.li(
@@ -45,13 +61,16 @@ object ShareView {
 
       <.div(
         SmartPanel(
-          SmartPanel.Props(Some(1), s.magazine, s.magazine.fold("Mikä lehti?")(_.name)),
+          SmartPanel.Props(phaseResolver, phases, magazinePhase, s.magazine.fold("Mikä lehti?")(_.name)),
           proxy().renderPending(_ => <.p("Ladataan...")),
           proxy().renderFailed(ex => <.p("Lehtien lataaminen epäonnistui!")),
           proxy().renderReady(m => <.ul(bss.listGroup.listGroup)(m.toTagMod(renderItem)))),
         SmartPanel(
-          SmartPanel.Props(s.magazine, s.year, s.year.fold("Mikä vuosi?")(_.toString())),
-          <.ul(bss.listGroup.listGroup)(years.toTagMod(renderYear))))
+          SmartPanel.Props(phaseResolver, phases, yearPhase, s.year.fold("Mikä vuosi?")(_.toString())),
+          <.ul(bss.listGroup.listGroup)(years.toTagMod(renderYear))),
+        SmartPanel(
+          SmartPanel.Props(phaseResolver, phases, numberPhase, s.number.fold("Mikä numero?")((s: String) => s)),
+          <.div("lomake tähän...")))
     }
   }
 
@@ -62,7 +81,7 @@ object ShareView {
     }
 
   val component = ScalaComponent.builder[Props]("ShareView")
-    .initialState(State(None, None))
+    .initialState(State(None, None, None))
     .renderBackend[Backend]
     .componentDidMount(scope => scope.backend.mounted(scope.props))
     .build
@@ -71,13 +90,18 @@ object ShareView {
 }
 
 object SmartPanel {
-  case class Props(prev: Option[_], curr: Option[_], heading: String, style: CommonStyle.Value = CommonStyle.default)
+  case class Props(phaseResolver: (ShareView.Phase) => Boolean, phases: Seq[ShareView.Phase], curr: ShareView.Phase, heading: String, style: CommonStyle.Value = CommonStyle.default)
 
   val component = ScalaComponent.builder[Props]("SmartPanel")
-    .renderPC((_, p, c) =>
-      Panel(Panel.Props(p.heading, p.style), 
-          if (p.prev.isDefined && !p.curr.isDefined) c
-          else VdomArray.empty()))
+    .renderPC((_, p, c) => {
+      val allPreviousPhasesDefined = !p.phases.takeWhile(_ != p.curr).find(!p.phaseResolver(_)).isDefined
+      val isCurrDefined = p.phaseResolver(p.curr)
+      
+      Panel(
+        Panel.Props(p.heading, p.style),
+        if (allPreviousPhasesDefined && !isCurrDefined) c
+        else VdomArray.empty())
+    })
     .build
 
   def apply(props: Props, children: VdomNode*) = component(props)(children: _*)
