@@ -46,9 +46,9 @@ lazy val client: Project = (project in file("client"))
 lazy val clients = Seq(client)
 
 // instantiate the JVM project for SBT with some additional settings
-lazy val server = (project in file("server"))
+lazy val devserver = (project in file("devserver"))
   .settings(
-    name := "server",
+    name := "devserver",
     version := Settings.version,
     scalaVersion := Settings.versions.scala,
     scalacOptions ++= Settings.scalacOptions,
@@ -73,14 +73,14 @@ lazy val ReleaseCmd = Command.command("release") {
   state => "set elideOptions in client := Seq(\"-Xelide-below\", \"WARNING\")" ::
     "client/clean" ::
     "client/test" ::
-    "server/clean" ::
-    "server/test" ::
-    "server/dist" ::
+    "devserver/clean" ::
+    "devserver/test" ::
+    "devserver/dist" ::
     "set elideOptions in client := Seq()" ::
     state
 }
 
-// lazy val root = (project in file(".")).aggregate(client, server)
+// lazy val root = (project in file(".")).aggregate(client, devserver)
 
-// loads the Play server project at sbt startup
-onLoad in Global := (Command.process("project server", _: State)) compose (onLoad in Global).value
+// loads the Play devserver project at sbt startup
+onLoad in Global := (Command.process("project devserver", _: State)) compose (onLoad in Global).value
