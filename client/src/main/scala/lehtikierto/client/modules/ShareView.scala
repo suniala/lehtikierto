@@ -6,6 +6,8 @@ import diode.react._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
+import lehtikierto.client.Routes
+import lehtikierto.client.Routes.DashboardLoc
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.client.components._
 import lehtikierto.client.services._
@@ -87,7 +89,9 @@ object ShareView {
             <.input.text(bss.formControl, ^.id := "number", ^.value := s.editNumber.getOrElse(""),
               ^.placeholder := "Kirjoita lehden numero tähän", ^.onChange ==> updateNumber)),
             <.div(bss.pullRight,
-              <.span(Button(Button.Props(submitForm(), disabled = s.editNumber.isEmpty), "Valmis"))))
+              <.span(Button(Button.Props(submitForm(), disabled = s.editNumber.isEmpty), "Valmis")))),
+          <.div(bss.pullRight,
+            <.span(Routes.link(DashboardLoc)("Peruuta")))
       )
     }
   }

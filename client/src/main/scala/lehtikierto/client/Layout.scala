@@ -5,7 +5,7 @@ import japgolly.scalajs.react.extra.router.{Resolution, RouterCtl}
 import japgolly.scalajs.react.vdom.VdomElement
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.{BackendScope, Callback, ScalaComponent}
-import lehtikierto.client.SPAMain.Loc
+import lehtikierto.client.Routes.Loc
 import lehtikierto.client.components.GlobalStyles
 import lehtikierto.client.modules.MainMenu
 import lehtikierto.client.services.FetchUser

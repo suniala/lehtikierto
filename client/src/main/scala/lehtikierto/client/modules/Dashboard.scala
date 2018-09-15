@@ -6,7 +6,7 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
-import lehtikierto.client.SPAMain.Loc
+import lehtikierto.client.Routes.Loc
 import lehtikierto.client.components._
 import lehtikierto.client.services.RootModel
 import lehtikierto.shared.{Magazine, Share, Subscription}

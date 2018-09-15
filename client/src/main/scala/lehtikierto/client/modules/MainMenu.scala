@@ -3,7 +3,7 @@ package lehtikierto.client.modules
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
-import lehtikierto.client.SPAMain.{DashboardLoc, Loc, ShareLoc}
+import lehtikierto.client.Routes.{DashboardLoc, Loc, ShareLoc}
 import lehtikierto.client.components.Icon._
 import lehtikierto.client.components._
 import scalacss.ScalaCssReact._
