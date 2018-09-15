@@ -42,7 +42,7 @@ object Todo {
 
     def render(p: Props, s: State): VdomElement =
       Panel(Panel.Props("What needs to be done"), <.div(
-        p.proxy().renderFailed(ex => "Error loading"),
+        p.proxy().renderFailed(_ => "Error loading"),
         p.proxy().renderPending(_ > 500, _ => "Loading..."),
         p.proxy().render(todos => TodoList(todos.items, item => p.proxy.dispatchCB(UpdateTodo(item)),
           item => editTodo(Some(item)), item => p.proxy.dispatchCB(DeleteTodo(item)))),

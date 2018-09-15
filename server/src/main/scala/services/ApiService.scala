@@ -78,11 +78,10 @@ class ApiService extends Api {
     user match {
       case Some(u) =>
         allSubscriptions.values.find(_.magazine.id == magazineId) match {
-          case None => {
+          case None =>
             val subscription = new Subscription(SubscriptionId(idgen()), u, allMagazines.find(_.id.equals(magazineId)).get)
             allSubscriptions(subscription.id) = subscription
             subscription
-          }
           case Some(subscription) => subscription
         }
     }
@@ -90,7 +89,7 @@ class ApiService extends Api {
   
   override def unsubscribe(id: SubscriptionId): Boolean = {
     user match {
-      case Some(u) => allSubscriptions.remove(id) match {
+      case Some(_) => allSubscriptions.remove(id) match {
         case Some(_) => true
         case _ => false
       }

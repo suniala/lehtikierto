@@ -16,7 +16,7 @@ object MagazineList {
     .render_P { proxy =>
       Panel(Panel.Props("Kaikki lehdet"),
         proxy().renderPending(_ => <.p("Ladataan...")),
-        proxy().renderFailed(ex => <.p("Lehtien lataaminen epäonnistui!")),
+        proxy().renderFailed(_ => <.p("Lehtien lataaminen epäonnistui!")),
         proxy().renderReady(m => <.ul(m.toTagMod(
             magazine =>
               <.li(

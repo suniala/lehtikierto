@@ -26,7 +26,7 @@ object SubscriptionList {
         Panel(
           Panel.Props("Tilaukseni"),
           proxy().renderPending(_ => <.p("Ladataan...")),
-          proxy().renderFailed(ex => <.p("Tilauksien lataaminen epäonnistui!")),
+          proxy().renderFailed(_ => <.p("Tilauksien lataaminen epäonnistui!")),
           proxy().renderReady(m => <.ul(bss.listGroup.listGroup)(m.toTagMod(renderItem)))
         )
       }

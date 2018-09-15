@@ -36,8 +36,8 @@ object SPAMain extends js.JSApp {
     val todoWrapper = SPACircuit.connect(_.todos)
     // wrap/connect components to the circuit
     (staticRoute(root, DashboardLoc) ~> renderR(ctl => SPACircuit.wrap((m: RootModel) => m)(proxy => Dashboard(ctl, proxy)))
-      | staticRoute("#jaa", ShareLoc) ~> renderR(ctl => SPACircuit.wrap((m: RootModel) => m.magazines)(proxy => ShareView(proxy)))
-      | staticRoute("#todo", TodoLoc) ~> renderR(ctl => todoWrapper(Todo(_)))
+      | staticRoute("#jaa", ShareLoc) ~> renderR(_ => SPACircuit.wrap((m: RootModel) => m.magazines)(proxy => ShareView(proxy)))
+      | staticRoute("#todo", TodoLoc) ~> renderR(_ => todoWrapper(Todo(_)))
       ).notFound(redirectToPage(DashboardLoc)(Redirect.Replace))
   }.renderWith(layout)
 

@@ -65,7 +65,7 @@ object ShareView {
         SmartPanel(
           SmartPanel.Props(phaseResolver, phases, magazinePhase, s.magazine.fold("Mikä lehti?")(_.name)),
           proxy().renderPending(_ => <.p("Ladataan...")),
-          proxy().renderFailed(ex => <.p("Lehtien lataaminen epäonnistui!")),
+          proxy().renderFailed(_ => <.p("Lehtien lataaminen epäonnistui!")),
           proxy().renderReady(m => <.ul(bss.listGroup.listGroup)(m.toTagMod(renderItem)))),
         SmartPanel(
           SmartPanel.Props(phaseResolver, phases, yearPhase, s.year.fold("Mikä vuosi?")(_.toString())),

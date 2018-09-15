@@ -15,7 +15,7 @@ object ShareList {
     .render_P { proxy =>
       Panel(Panel.Props("Jakamani lehdet"),
         proxy().renderPending(_ => <.p("Ladataan...")),
-        proxy().renderFailed(ex => <.p("Jaettujen lehtien lataaminen epäonnistui!")),
+        proxy().renderFailed(_ => <.p("Jaettujen lehtien lataaminen epäonnistui!")),
         proxy().renderReady(m => <.ul(m.toTagMod(
             Share => <.li(Share.magazine.name))))
       )
