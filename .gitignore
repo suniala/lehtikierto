@@ -1,6 +1,7 @@
 *.class
 *.log
 node_modules
+*.sjsir
 
 # sbt specific
 .cache/
