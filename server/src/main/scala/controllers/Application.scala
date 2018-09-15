@@ -1,20 +1,17 @@
 package controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import com.google.inject.Inject
-
 import lehtikierto.shared.Api
 import play.api.Configuration
 import play.api.Environment
-import play.api.mvc.Action
-import play.api.mvc.Controller
+import play.api.mvc.{Action, AnyContent, Controller}
 import services.ApiService
 import upickle.Js
 
 object Router extends autowire.Server[Js.Value, upickle.Reader, upickle.Writer] {
-  def read[R: upickle.Reader](p: Js.Value) = upickle.readJs[R](p)
-  def write[R: upickle.Writer](r: R) = upickle.writeJs(r)
+  def read[R: upickle.Reader](p: Js.Value): R = upickle.readJs[R](p)
+  def write[R: upickle.Writer](r: R): Js.Value = upickle.writeJs(r)
 }
 
 class Application @Inject() (implicit val config: Configuration, env: Environment) extends Controller {
@@ -24,7 +21,7 @@ class Application @Inject() (implicit val config: Configuration, env: Environmen
     Ok(views.html.index("SPA tutorial"))
   }
 
-  def autowireApi(path: String) = Action.async(parse.tolerantText) {
+  def autowireApi(path: String): Action[String] = Action.async(parse.tolerantText) {
     implicit request =>
       println(s"Request path: $path")
 
@@ -38,7 +35,7 @@ class Application @Inject() (implicit val config: Configuration, env: Environmen
       })
   }
 
-  def logging = Action(parse.anyContent) {
+  def logging: Action[AnyContent] = Action(parse.anyContent) {
     implicit request =>
       request.body.asJson.foreach { msg =>
         println(s"CLIENT - $msg")

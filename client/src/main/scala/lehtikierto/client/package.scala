@@ -1,7 +1,9 @@
 package lehtikierto
+import scalacss.defaults.Exports
+import scalacss.internal.mutable.Settings
 
 package object client {
 
-  val CssSettings = scalacss.devOrProdDefaults
+  val CssSettings: Exports with Settings = scalacss.devOrProdDefaults
 
 }

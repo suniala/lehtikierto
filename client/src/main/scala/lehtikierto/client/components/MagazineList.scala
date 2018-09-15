@@ -4,6 +4,7 @@ import diode.react.ReactPot._
 import diode.react._
 import diode.data.Pot
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.shared.Magazine
@@ -11,7 +12,7 @@ import lehtikierto.client.services.UpdateMagazines
 import lehtikierto.client.services.AddSubscription
 
 object MagazineList {
-  val MagazineList = ScalaComponent.builder[ModelProxy[Pot[Seq[Magazine]]]]("MagazineList")
+  private val MagazineList = ScalaComponent.builder[ModelProxy[Pot[Seq[Magazine]]]]("MagazineList")
     .render_P { proxy =>
       Panel(Panel.Props("Kaikki lehdet"),
         proxy().renderPending(_ => <.p("Ladataan...")),
@@ -31,5 +32,6 @@ object MagazineList {
     )
     .build
 
-  def apply(proxy: ModelProxy[Pot[Seq[Magazine]]]) = MagazineList(proxy)
+  def apply(proxy: ModelProxy[Pot[Seq[Magazine]]]): Unmounted[ModelProxy[Pot[Seq[Magazine]]], Unit, Unit] =
+    MagazineList(proxy)
 }

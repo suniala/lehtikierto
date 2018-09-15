@@ -1,6 +1,7 @@
 package lehtikierto.client.components
 
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.language.implicitConversions
@@ -33,12 +34,13 @@ object Bootstrap {
 
     case class Props(onClick: Callback, style: CommonStyle.Value = CommonStyle.default, addStyles: Seq[StyleA] = Seq())
 
-    val component = ScalaComponent.builder[Props]("Button")
+    private val component = ScalaComponent.builder[Props]("Button")
       .renderPC((_, p, c) =>
         <.button(bss.buttonOpt(p.style), p.addStyles.toTagMod, ^.tpe := "button", ^.onClick --> p.onClick, c)
       ).build
 
-    def apply(props: Props, children: VdomNode*) = component(props)(children: _*)
+    def apply(props: Props, children: VdomNode*): Unmounted[Props, Unit, Unit] = component(props)(children: _*)
+    //noinspection TypeAnnotation
     def apply() = component
   }
 
@@ -46,7 +48,7 @@ object Bootstrap {
 
     case class Props(heading: String, style: CommonStyle.Value = CommonStyle.default)
 
-    val component = ScalaComponent.builder[Props]("Panel")
+    private val component = ScalaComponent.builder[Props]("Panel")
       .renderPC((_, p, c) =>
         <.div(bss.panelOpt(p.style),
           <.div(bss.panelHeading, p.heading),
@@ -54,7 +56,8 @@ object Bootstrap {
         )
       ).build
 
-    def apply(props: Props, children: VdomNode*) = component(props)(children: _*)
+    def apply(props: Props, children: VdomNode*): Unmounted[Props, Unit, Unit] = component(props)(children: _*)
+    //noinspection TypeAnnotation
     def apply() = component
   }
 
@@ -65,7 +68,7 @@ object Bootstrap {
                      keyboard: Boolean = true)
 
     class Backend(t: BackendScope[Props, Unit]) {
-      def hide =
+      private def hide =
         // instruct Bootstrap to hide the modal
         t.getDOMNode.map(jQuery(_).modal("hide")).void
 
@@ -75,7 +78,7 @@ object Bootstrap {
         t.props.flatMap(_.closed).runNow()
       }
 
-      def render(p: Props, c: PropsChildren) = {
+      def render(p: Props, c: PropsChildren): VdomElement = {
         val modalStyle = bss.modal
         <.div(modalStyle.modal, modalStyle.fade, ^.role := "dialog", ^.aria.hidden := true,
           <.div(modalStyle.dialog,
@@ -89,7 +92,7 @@ object Bootstrap {
       }
     }
 
-    val component = ScalaComponent.builder[Props]("Modal")
+    private val component = ScalaComponent.builder[Props]("Modal")
       .renderBackendWithChildren[Backend]
       .componentDidMount(scope => Callback {
         val p = scope.props
@@ -100,7 +103,8 @@ object Bootstrap {
       })
       .build
 
-    def apply(props: Props, children: VdomElement*) = component(props)(children: _*)
+    def apply(props: Props, children: VdomElement*): Unmounted[Props, Unit, Backend] = component(props)(children: _*)
+    //noinspection TypeAnnotation
     def apply() = component
   }
 

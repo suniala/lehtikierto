@@ -1,8 +1,9 @@
 package lehtikierto.client.components
 
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
-import lehtikierto.client.components.Bootstrap.{CommonStyle, Button}
+import lehtikierto.client.components.Bootstrap.{Button, CommonStyle}
 import lehtikierto.shared._
 import scalacss.ScalaCssReact._
 
@@ -20,7 +21,7 @@ object TodoList {
   private val TodoList = ScalaComponent.builder[TodoListProps]("TodoList")
     .render_P(p => {
       val style = bss.listGroup
-      def renderItem(item: TodoItem) = {
+      def renderItem(item: TodoItem): VdomElement = {
         // convert priority into Bootstrap style
         val itemStyle = item.priority match {
           case TodoLow => style.itemOpt(CommonStyle.info)
@@ -39,6 +40,7 @@ object TodoList {
     })
     .build
 
-  def apply(items: Seq[TodoItem], stateChange: TodoItem => Callback, editItem: TodoItem => Callback, deleteItem: TodoItem => Callback) =
+  def apply(items: Seq[TodoItem], stateChange: TodoItem => Callback, editItem: TodoItem => Callback,
+            deleteItem: TodoItem => Callback): Unmounted[TodoListProps, Unit, Unit] =
     TodoList(TodoListProps(items, stateChange, editItem, deleteItem))
 }

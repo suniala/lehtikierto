@@ -89,7 +89,7 @@ object Chart {
 
   case class ChartProps(name: String, style: ChartStyle, data: ChartData, width: Int = 500, height: Int = 300)
 
-  val Chart = ScalaComponent.builder[ChartProps]("Chart")
+  private val Chart = ScalaComponent.builder[ChartProps]("Chart")
     .render_P(p =>
       <.canvas(VdomAttr("width") := p.width, VdomAttr("height") := p.height)
     )
@@ -104,5 +104,6 @@ object Chart {
       }
     }).build
 
+  //noinspection TypeAnnotation
   def apply(props: ChartProps) = Chart(props)
 }

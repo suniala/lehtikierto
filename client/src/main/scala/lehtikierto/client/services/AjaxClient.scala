@@ -20,6 +20,6 @@ object AjaxClient extends autowire.Client[Js.Value, Reader, Writer] {
       .map(json.read)
   }
 
-  def read[R: Reader](p: Js.Value) = upickle.readJs[R](p)
-  def write[R: Writer](r: R) = upickle.writeJs(r)
+  def read[R: Reader](p: Js.Value): R = upickle.readJs[R](p)
+  def write[R: Writer](r: R): Js.Value = upickle.writeJs(r)
 }

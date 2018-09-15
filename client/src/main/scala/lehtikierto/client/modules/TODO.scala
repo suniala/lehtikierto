@@ -4,13 +4,13 @@ import diode.react.ReactPot._
 import diode.react._
 import diode.data.Pot
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.{Component, Unmounted}
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.client.components._
 import lehtikierto.client.logger._
 import lehtikierto.client.services._
 import lehtikierto.shared._
-
 import scalacss.ScalaCssReact._
 
 object Todo {
@@ -20,15 +20,15 @@ object Todo {
   case class State(selectedItem: Option[TodoItem] = None, showTodoForm: Boolean = false)
 
   class Backend($: BackendScope[Props, State]) {
-    def mounted(props: Props) =
+    def mounted(props: Props): Callback =
       // dispatch a message to refresh the todos, which will cause TodoStore to fetch todos from the server
       Callback.when(props.proxy().isEmpty)(props.proxy.dispatchCB(RefreshTodos))
 
-    def editTodo(item: Option[TodoItem]) =
+    def editTodo(item: Option[TodoItem]): CallbackTo[Unit] =
       // activate the edit dialog
       $.modState(s => s.copy(selectedItem = item, showTodoForm = true))
 
-    def todoEdited(item: TodoItem, cancelled: Boolean) = {
+    def todoEdited(item: TodoItem, cancelled: Boolean): CallbackTo[Unit] = {
       val cb = if (cancelled) {
         // nothing to do here
         Callback.log("Todo editing cancelled")
@@ -40,7 +40,7 @@ object Todo {
       cb >> $.modState(s => s.copy(showTodoForm = false))
     }
 
-    def render(p: Props, s: State) =
+    def render(p: Props, s: State): VdomElement =
       Panel(Panel.Props("What needs to be done"), <.div(
         p.proxy().renderFailed(ex => "Error loading"),
         p.proxy().renderPending(_ > 500, _ => "Loading..."),
@@ -54,14 +54,14 @@ object Todo {
   }
 
   // create the React component for To Do management
-  val component = ScalaComponent.builder[Props]("TODO")
+  private val component = ScalaComponent.builder[Props]("TODO")
     .initialState(State()) // initial state from TodoStore
     .renderBackend[Backend]
     .componentDidMount(scope => scope.backend.mounted(scope.props))
     .build
 
   /** Returns a function compatible with router location system while using our own props */
-  def apply(proxy: ModelProxy[Pot[Todos]]) = component(Props(proxy))
+  def apply(proxy: ModelProxy[Pot[Todos]]): Unmounted[Props, State, Backend] = component(Props(proxy))
 }
 
 object TodoForm {
@@ -82,13 +82,13 @@ object TodoForm {
       // call parent handler with the new item and whether form was OK or cancelled
       props.submitHandler(state.item, state.cancelled)
 
-    def updateDescription(e: ReactEventFromInput) = {
+    def updateDescription(e: ReactEventFromInput): CallbackTo[Unit] = {
       val text = e.target.value
       // update TodoItem content
       t.modState(s => s.copy(item = s.item.copy(content = text)))
     }
 
-    def updatePriority(e: ReactEventFromInput) = {
+    def updatePriority(e: ReactEventFromInput): CallbackTo[Unit] = {
       // update TodoItem priority
       val newPri = e.currentTarget.value match {
         case p if p == TodoHigh.toString => TodoHigh
@@ -98,7 +98,7 @@ object TodoForm {
       t.modState(s => s.copy(item = s.item.copy(priority = newPri)))
     }
 
-    def render(p: Props, s: State) = {
+    def render(p: Props, s: State): VdomElement = {
       log.debug(s"User is ${if (s.item.id == "") "adding" else "editing"} a todo or two")
       val headerText = if (s.item.id == "") "Add new todo" else "Edit todo"
       Modal(Modal.Props(
@@ -125,10 +125,10 @@ object TodoForm {
     }
   }
 
-  val component = ScalaComponent.builder[Props]("TodoForm")
+  private val component = ScalaComponent.builder[Props]("TodoForm")
     .initialStateFromProps(p => State(p.item.getOrElse(TodoItem("", 0, "", TodoNormal, completed = false))))
     .renderBackend[Backend]
     .build
 
-  def apply(props: Props) = component(props)
+  def apply(props: Props): Unmounted[Props, State, Backend] = component(props)
 }

@@ -2,7 +2,6 @@ package lehtikierto.client.components
 
 import japgolly.univeq.UnivEq
 import lehtikierto.client.components.Bootstrap.CommonStyle
-
 import lehtikierto.client.CssSettings._
 import scalacss.internal.mutable
 import lehtikierto.client.components.Bootstrap.CommonStyle._
@@ -13,63 +12,63 @@ class BootstrapStyles(implicit r: mutable.Register) extends StyleSheet.Inline()(
 
   implicit val styleUnivEq: UnivEq[CommonStyle.Value] = new UnivEq[CommonStyle.Value] {}
 
-  val csDomain = Domain.ofValues(default, primary, success, info, warning, danger)
+  val csDomain: Domain[Bootstrap.CommonStyle.Value] = Domain.ofValues(default, primary, success, info, warning, danger)
 
-  val contextDomain = Domain.ofValues(success, info, warning, danger)
+  val contextDomain: Domain[Bootstrap.CommonStyle.Value] = Domain.ofValues(success, info, warning, danger)
 
-  def commonStyle[A: UnivEq](domain: Domain[A], base: String) = styleF(domain)(opt =>
+  def commonStyle[A: UnivEq](domain: Domain[A], base: String): A => StyleA = styleF(domain)(opt =>
     styleS(addClassNames(base, s"$base-$opt"))
   )
 
   def styleWrap(classNames: String*) = style(addClassNames(classNames: _*))
 
-  val buttonOpt = commonStyle(csDomain, "btn")
+  val buttonOpt: Bootstrap.CommonStyle.Value => StyleA = commonStyle(csDomain, "btn")
 
   val button = buttonOpt(default)
 
-  val panelOpt = commonStyle(csDomain, "panel")
+  val panelOpt: Bootstrap.CommonStyle.Value => StyleA = commonStyle(csDomain, "panel")
 
   val panel = panelOpt(default)
 
-  val labelOpt = commonStyle(csDomain, "label")
+  val labelOpt: Bootstrap.CommonStyle.Value => StyleA = commonStyle(csDomain, "label")
 
   val label = labelOpt(default)
 
-  val alert = commonStyle(contextDomain, "alert")
+  val alert: Bootstrap.CommonStyle.Value => StyleA = commonStyle(contextDomain, "alert")
 
-  val panelHeading = styleWrap("panel-heading")
+  val panelHeading: StyleA = styleWrap("panel-heading")
 
-  val panelBody = styleWrap("panel-body")
+  val panelBody: StyleA = styleWrap("panel-body")
 
   // wrap styles in a namespace, assign to val to prevent lazy initialization
   object modal {
-    val modal = styleWrap("modal")
-    val fade = styleWrap("fade")
-    val dialog = styleWrap("modal-dialog")
-    val content = styleWrap("modal-content")
-    val header = styleWrap("modal-header")
-    val body = styleWrap("modal-body")
-    val footer = styleWrap("modal-footer")
+    val modal: StyleA = styleWrap("modal")
+    val fade: StyleA = styleWrap("fade")
+    val dialog: StyleA = styleWrap("modal-dialog")
+    val content: StyleA = styleWrap("modal-content")
+    val header: StyleA = styleWrap("modal-header")
+    val body: StyleA = styleWrap("modal-body")
+    val footer: StyleA = styleWrap("modal-footer")
   }
 
-  val _modal = modal
+  val _modal: modal.type = modal
 
   object listGroup {
-    val listGroup = styleWrap("list-group")
-    val item = styleWrap("list-group-item")
-    val itemOpt = commonStyle(contextDomain, "list-group-item")
+    val listGroup: StyleA = styleWrap("list-group")
+    val item: StyleA = styleWrap("list-group-item")
+    val itemOpt: Bootstrap.CommonStyle.Value => StyleA = commonStyle(contextDomain, "list-group-item")
   }
 
-  val _listGroup = listGroup
-  val pullRight = styleWrap("pull-right")
-  val buttonXS = styleWrap("btn-xs")
-  val close = styleWrap("close")
+  val _listGroup: listGroup.type = listGroup
+  val pullRight: StyleA = styleWrap("pull-right")
+  val buttonXS: StyleA = styleWrap("btn-xs")
+  val close: StyleA = styleWrap("close")
 
   val labelAsBadge = style(addClassName("label-as-badge"), borderRadius(1.em))
 
-  val navbar = styleWrap("nav", "navbar-nav")
-  val navbarRight = styleWrap("navbar-right")
+  val navbar: StyleA = styleWrap("nav", "navbar-nav")
+  val navbarRight: StyleA = styleWrap("navbar-right")
 
-  val formGroup = styleWrap("form-group")
-  val formControl = styleWrap("form-control")
+  val formGroup: StyleA = styleWrap("form-group")
+  val formControl: StyleA = styleWrap("form-control")
 }

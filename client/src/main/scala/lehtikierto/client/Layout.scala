@@ -1,6 +1,6 @@
 package lehtikierto.client
 
-import diode.react.ModelProxy
+import diode.react.{ModelProxy, ReactConnectProxy}
 import japgolly.scalajs.react.BackendScope
 import japgolly.scalajs.react.ScalaComponent
 import japgolly.scalajs.react.extra.router.Resolution
@@ -22,13 +22,13 @@ object Layout {
 
   case class Props(router: RouterCtl[Loc], res: Resolution[Loc], userProxy: ModelProxy[Option[User]])
 
-  val todoCountWrapper = SPACircuit.connect(_.todos.map(_.items.count(!_.completed)).toOption)
+  val todoCountWrapper: ReactConnectProxy[Option[Int]] = SPACircuit.connect(_.todos.map(_.items.count(!_.completed)).toOption)
 
   private class Backend($: BackendScope[Props, Unit]) {
-    def mounted(props: Props) =
+    def mounted(props: Props): Callback =
       Callback.when(props.userProxy.value.isEmpty)(props.userProxy.dispatchCB(FetchUser))
 
-    def render(props: Props) = {
+    def render(props: Props): VdomElement = {
       if (props.userProxy().isDefined) {
         val user = props.userProxy().get
         

@@ -11,8 +11,11 @@ import lehtikierto.client.services.SPACircuit
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 import CssSettings._
+import diode.react.{ReactConnectProps, ReactConnectProxy}
+import japgolly.scalajs.react.component.Generic
 import scalacss.ScalaCssReact._
 import lehtikierto.client.services.RootModel
+import lehtikierto.shared.User
 
 @JSExportTopLevel("SPAMain")
 object SPAMain extends js.JSApp {
@@ -27,7 +30,7 @@ object SPAMain extends js.JSApp {
   case object TodoLoc extends Loc
 
   // configure the router
-  val routerConfig = RouterConfigDsl[Loc].buildConfig { dsl =>
+  val routerConfig: RouterConfig[Loc] = RouterConfigDsl[Loc].buildConfig { dsl =>
     import dsl._
 
     val todoWrapper = SPACircuit.connect(_.todos)
@@ -38,10 +41,10 @@ object SPAMain extends js.JSApp {
       ).notFound(redirectToPage(DashboardLoc)(Redirect.Replace))
   }.renderWith(layout)
 
-  val userWrapper = SPACircuit.connect(_.user.toOption)
+  val userWrapper: ReactConnectProxy[Option[User]] = SPACircuit.connect(_.user.toOption)
   
   // base layout for all pages
-  def layout(c: RouterCtl[Loc], r: Resolution[Loc]) = {
+  def layout(c: RouterCtl[Loc], r: Resolution[Loc]): Generic.UnmountedWithRoot[ReactConnectProps[Option[User]], _, _, _] = {
     userWrapper(userProxy => Layout(c, r, userProxy))
   }
   

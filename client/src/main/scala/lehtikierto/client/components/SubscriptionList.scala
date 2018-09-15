@@ -4,6 +4,7 @@ import diode.react.ReactPot._
 import diode.react._
 import diode.data.Pot
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
 import scalacss.ScalaCssReact._
 import lehtikierto.client.components.Bootstrap._
@@ -14,9 +15,9 @@ import lehtikierto.client.services.DeleteSubscription
 object SubscriptionList {
   @inline private def bss = GlobalStyles.bootstrapStyles
 
-  val SubscriptionList = ScalaComponent.builder[ModelProxy[Pot[Seq[Subscription]]]]("SubscriptionList")
+  private val SubscriptionList = ScalaComponent.builder[ModelProxy[Pot[Seq[Subscription]]]]("SubscriptionList")
     .render_P { proxy => {
-        def renderItem(item: Subscription) = {
+        def renderItem(item: Subscription): VdomElement = {
           <.li(bss.listGroup.item,
             <.span(item.magazine.name),
             Button(Button.Props(proxy.dispatchCB(DeleteSubscription(item.id)), addStyles = Seq(bss.pullRight, bss.buttonXS)), "Peru tilaus"))
@@ -34,5 +35,6 @@ object SubscriptionList {
       Callback.when(scope.props.value.isEmpty)(scope.props.dispatchCB(UpdateSubscriptions())))
     .build
 
-  def apply(proxy: ModelProxy[Pot[Seq[Subscription]]]) = SubscriptionList(proxy)
+  def apply(proxy: ModelProxy[Pot[Seq[Subscription]]]): Unmounted[ModelProxy[Pot[Seq[Subscription]]], Unit, Unit] =
+    SubscriptionList(proxy)
 }
