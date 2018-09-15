@@ -41,7 +41,12 @@ object ShareView {
     def render(p: Props, s: State): VdomElement = {
       val proxy = p.proxy
       val years = Seq(2018, 2017) // TODO: calculate appropriate years
-      val phaseResolver = (phase: Phase) => phase.isDone(s)
+
+      def phaseEnabled(phase: Phase): Boolean = {
+        val areAllPreviousPhasesDone = phases.takeWhile(_ != phase).forall(_.isDone(s))
+        val isThisPhaseDone = phase.isDone(s)
+        areAllPreviousPhasesDone && !isThisPhaseDone
+      }
 
       def renderItem(item: Magazine): VdomElement = {
         <.li(
@@ -58,16 +63,16 @@ object ShareView {
       }
 
       <.div(
-        SmartPanel(
-          SmartPanel.Props(phaseResolver, phases, magazinePhase, s.magazine.fold("Mikä lehti?")(_.name)),
+        PhasePanel(
+          PhasePanel.Props(phaseEnabled(magazinePhase), s.magazine.fold("Mikä lehti?")(_.name)),
           proxy().renderPending(_ => <.p("Ladataan...")),
           proxy().renderFailed(_ => <.p("Lehtien lataaminen epäonnistui!")),
           proxy().renderReady(m => <.ul(bss.listGroup.listGroup)(m.toTagMod(renderItem)))),
-        SmartPanel(
-          SmartPanel.Props(phaseResolver, phases, yearPhase, s.year.fold("Mikä vuosi?")(_.toString())),
+        PhasePanel(
+          PhasePanel.Props(phaseEnabled(yearPhase), s.year.fold("Mikä vuosi?")(_.toString())),
           <.ul(bss.listGroup.listGroup)(years.toTagMod(renderYear))),
-        SmartPanel(
-          SmartPanel.Props(phaseResolver, phases, numberPhase, s.number.fold("Mikä numero?")((s: String) => s)),
+        PhasePanel(
+          PhasePanel.Props(phaseEnabled(numberPhase), s.number.fold("Mikä numero?")((s: String) => s)),
           <.div("lomake tähän...")))
     }
   }
@@ -87,17 +92,14 @@ object ShareView {
   def apply(proxy: ModelProxy[Pot[Seq[Magazine]]]): Unmounted[Props, State, Backend] = component(Props(proxy))
 }
 
-object SmartPanel {
-  case class Props(phaseResolver: ShareView.Phase => Boolean, phases: Seq[ShareView.Phase], curr: ShareView.Phase, heading: String, style: CommonStyle.Value = CommonStyle.default)
+object PhasePanel {
+  case class Props(enabled: Boolean, heading: String, style: CommonStyle.Value = CommonStyle.default)
 
   private val component = ScalaComponent.builder[Props]("SmartPanel")
     .renderPC((_, p, c) => {
-      val allPreviousPhasesDefined = p.phases.takeWhile(_ != p.curr).forall(p.phaseResolver(_))
-      val isCurrDefined = p.phaseResolver(p.curr)
-      
       Panel(
         Panel.Props(p.heading, p.style),
-        if (allPreviousPhasesDefined && !isCurrDefined) c
+        if (p.enabled) c
         else VdomArray.empty())
     })
     .build
