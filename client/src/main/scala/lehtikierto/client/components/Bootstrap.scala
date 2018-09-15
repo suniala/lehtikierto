@@ -32,11 +32,13 @@ object Bootstrap {
 
   object Button {
 
-    case class Props(onClick: Callback, style: CommonStyle.Value = CommonStyle.default, addStyles: Seq[StyleA] = Seq())
+    case class Props(onClick: Callback, style: CommonStyle.Value = CommonStyle.default, addStyles: Seq[StyleA] = Seq(),
+                     disabled: Boolean = false)
 
     private val component = ScalaComponent.builder[Props]("Button")
       .renderPC((_, p, c) =>
-        <.button(bss.buttonOpt(p.style), p.addStyles.toTagMod, ^.tpe := "button", ^.onClick --> p.onClick, c)
+        <.button(bss.buttonOpt(p.style), p.addStyles.toTagMod, ^.tpe := "button", ^.onClick --> p.onClick,
+          ^.disabled := p.disabled, c)
       ).build
 
     def apply(props: Props, children: VdomNode*): Unmounted[Props, Unit, Unit] = component(props)(children: _*)

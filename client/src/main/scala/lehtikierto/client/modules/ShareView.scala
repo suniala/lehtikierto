@@ -17,7 +17,7 @@ object ShareView {
 
   case class Props(proxy: ModelProxy[Pot[Seq[Magazine]]])
 
-  case class State(magazine: Option[Magazine], year: Option[Int], number: Option[String])
+  case class State(magazine: Option[Magazine], year: Option[Int], number: Option[String], editNumber: Option[String])
 
   trait Phase {
     def isDone(state: State): Boolean
@@ -62,6 +62,15 @@ object ShareView {
           Button(Button.Props($.modState(s => s.copy(year = Some(year))), addStyles = Seq(bss.pullRight, bss.buttonXS)), "Valitse"))
       }
 
+      def updateNumber(e: ReactEventFromInput): CallbackTo[Unit] = {
+        val text = e.target.value
+        $.modState(s => s.copy(editNumber = Option(text)))
+      }
+
+      def submitForm(): Callback = {
+        $.modState(s => s.copy(number = s.editNumber, editNumber = None))
+      }
+
       <.div(
         PhasePanel(
           PhasePanel.Props(phaseEnabled(magazinePhase), s.magazine.fold("Mikä lehti?")(_.name)),
@@ -73,7 +82,13 @@ object ShareView {
           <.ul(bss.listGroup.listGroup)(years.toTagMod(renderYear))),
         PhasePanel(
           PhasePanel.Props(phaseEnabled(numberPhase), s.number.fold("Mikä numero?")((s: String) => s)),
-          <.div("lomake tähän...")))
+          <.div(bss.formGroup,
+            <.label(^.`for` := "number", "Lehden numero"),
+            <.input.text(bss.formControl, ^.id := "number", ^.value := s.editNumber.getOrElse(""),
+              ^.placeholder := "Kirjoita lehden numero tähän", ^.onChange ==> updateNumber)),
+            <.div(bss.pullRight,
+              <.span(Button(Button.Props(submitForm(), disabled = s.editNumber.isEmpty), "Valmis"))))
+      )
     }
   }
 
@@ -84,7 +99,7 @@ object ShareView {
     }
 
   private val component = ScalaComponent.builder[Props]("ShareView")
-    .initialState(State(None, None, None))
+    .initialState(State(None, None, None, None))
     .renderBackend[Backend]
     .componentDidMount(scope => scope.backend.mounted(scope.props))
     .build
