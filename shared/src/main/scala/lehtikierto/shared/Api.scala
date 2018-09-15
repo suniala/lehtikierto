@@ -1,5 +1,6 @@
 package lehtikierto.shared
 
+//noinspection AccessorLikeMethodIsEmptyParen
 trait Api {
   def getUser(): Option[User]
   

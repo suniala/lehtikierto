@@ -1,17 +1,16 @@
 package lehtikierto.client.services
 
+import java.util.concurrent.TimeUnit
+
 import autowire._
 import diode._
 import diode.data._
-import diode.util._
 import diode.react.ReactConnector
-import lehtikierto.shared.{TodoItem, Api}
-import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-import lehtikierto.shared.{User, Magazine, Share, Subscription}
+import diode.util._
+import lehtikierto.shared._
+
 import scala.concurrent.duration.FiniteDuration
-import java.util.concurrent.TimeUnit
-import lehtikierto.shared.SubscriptionId
-import lehtikierto.shared.MagazineId
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
 // Actions
 case object FetchUser extends Action
@@ -47,34 +46,34 @@ case class UpdateMotd(potResult: Pot[String] = Empty) extends PotAction[String, 
 case class RootModel(user: Pot[User], magazines: Pot[Seq[Magazine]], subscriptions: Pot[Seq[Subscription]], shares: Pot[Seq[Share]], todos: Pot[Todos], motd: Pot[String])
 
 class UserHandler[M](modelRW: ModelRW[M, Pot[User]]) extends ActionHandler(modelRW) {
-  override def handle = {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
     case FetchUser =>
       effectOnly(Effect(AjaxClient[Api].getUser().call().map(ReceiveUser)))
     case ReceiveUser(user) =>
       updated(user match {
-        case Some(user) => Ready(user)
+        case Some(u) => Ready(u)
         case _ => Empty
       })
   }
 }
 
 class MagazineHandler[M](modelRW: ModelRW[M, Pot[Seq[Magazine]]]) extends ActionHandler(modelRW) {
-  implicit val runner = new RunAfterJS
+  implicit val runner: RunAfterJS = new RunAfterJS
 
-  override def handle = {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateMagazines =>
-      val updateF = action.effect(AjaxClient[Api].getAllMagazines().call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].getAllMagazines().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
 }
 
 class SubscriptionHandler[M](modelRW: ModelRW[M, Pot[Seq[Subscription]]]) extends ActionHandler(modelRW) {
-  implicit val runner = new RunAfterJS
+  implicit val runner: RunAfterJS = new RunAfterJS
 
-  override def handle = {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateSubscriptions =>
-      val updateF = action.effect(AjaxClient[Api].getSubscriptions().call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].getSubscriptions().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
     case AddSubscription(magazineId) =>
@@ -85,18 +84,18 @@ class SubscriptionHandler[M](modelRW: ModelRW[M, Pot[Seq[Subscription]]]) extend
 }
 
 class ShareHandler[M](modelRW: ModelRW[M, Pot[Seq[Share]]]) extends ActionHandler(modelRW) {
-  implicit val runner = new RunAfterJS
+  implicit val runner: RunAfterJS = new RunAfterJS
 
-  override def handle = {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateShares =>
-      val updateF = action.effect(AjaxClient[Api].getShares().call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].getShares().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
 }
 
 case class Todos(items: Seq[TodoItem]) {
-  def updated(newItem: TodoItem) = {
+  def updated(newItem: TodoItem): Todos = {
     items.indexWhere(_.id == newItem.id) match {
       case -1 =>
         // add new
@@ -115,7 +114,7 @@ case class Todos(items: Seq[TodoItem]) {
   * @param modelRW Reader/Writer to access the model
   */
 class TodoHandler[M](modelRW: ModelRW[M, Pot[Todos]]) extends ActionHandler(modelRW) {
-  override def handle = {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
     case RefreshTodos =>
       effectOnly(Effect(AjaxClient[Api].getAllTodos().call().map(UpdateAllTodos)))
     case UpdateAllTodos(todos) =>
@@ -136,11 +135,11 @@ class TodoHandler[M](modelRW: ModelRW[M, Pot[Todos]]) extends ActionHandler(mode
   * @param modelRW Reader/Writer to access the model
   */
 class MotdHandler[M](modelRW: ModelRW[M, Pot[String]]) extends ActionHandler(modelRW) {
-  implicit val runner = new RunAfterJS
+  implicit val runner: RunAfterJS = new RunAfterJS
 
-  override def handle = {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateMotd =>
-      val updateF = action.effect(AjaxClient[Api].welcomeMsg("User X").call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].welcomeMsg("User X").call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
@@ -151,7 +150,7 @@ object SPACircuit extends Circuit[RootModel] with ReactConnector[RootModel] {
   // initial application model
   override protected def initialModel = RootModel(Empty, Empty, Empty, Empty, Empty, Empty)
   // combine all handlers into one
-  override protected val actionHandler = composeHandlers(
+  override protected val actionHandler: SPACircuit.HandlerFunction = composeHandlers(
     new UserHandler(zoomRW(_.user)((m, v) => m.copy(user = v))),
     new MagazineHandler(zoomRW(_.magazines)((m, v) => m.copy(magazines = v))),
     new SubscriptionHandler(zoomRW(_.subscriptions)((m, v) => m.copy(subscriptions = v))),

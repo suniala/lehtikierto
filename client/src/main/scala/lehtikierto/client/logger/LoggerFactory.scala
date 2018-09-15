@@ -30,7 +30,7 @@ trait Logger {
 }
 
 object LoggerFactory {
-  private[logger] def createLogger(name: String) = {}
+  private[logger] def createLogger(name: String): Unit = {}
 
   lazy val consoleAppender = new BrowserConsoleAppender
   lazy val popupAppender = new PopUpAppender

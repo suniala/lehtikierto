@@ -1,9 +1,10 @@
 package lehtikierto.client.components
 
+import diode.data.Pot
 import diode.react.ReactPot._
 import diode.react._
-import diode.data.Pot
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.client.services.UpdateMotd
@@ -14,12 +15,12 @@ import lehtikierto.client.services.UpdateMotd
 object Motd {
 
   // create the React component for holding the Message of the Day
-  val Motd = ScalaComponent.builder[ModelProxy[Pot[String]]]("Motd")
+  private val Motd = ScalaComponent.builder[ModelProxy[Pot[String]]]("Motd")
     .render_P { proxy =>
       Panel(Panel.Props("Message of the day"),
         // render messages depending on the state of the Pot
         proxy().renderPending(_ => <.p("Loading...")),
-        proxy().renderFailed(ex => <.p("Failed to load")),
+        proxy().renderFailed(_ => <.p("Failed to load")),
         proxy().renderReady(m => <.p(m)),
         Button(Button.Props(proxy.dispatchCB(UpdateMotd()), CommonStyle.danger), Icon.refresh, " Update")
       )
@@ -30,5 +31,5 @@ object Motd {
     )
     .build
 
-  def apply(proxy: ModelProxy[Pot[String]]) = Motd(proxy)
+  def apply(proxy: ModelProxy[Pot[String]]): Unmounted[ModelProxy[Pot[String]], Unit, Unit] = Motd(proxy)
 }

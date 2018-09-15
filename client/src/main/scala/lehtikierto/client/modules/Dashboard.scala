@@ -3,6 +3,7 @@ package lehtikierto.client.modules
 import diode.data.Pot
 import diode.react._
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.SPAMain.{Loc, TodoLoc}
@@ -55,5 +56,6 @@ object Dashboard {
     }
     .build
 
-  def apply(router: RouterCtl[Loc], proxy: ModelProxy[RootModel]) = component(Props(router, proxy))
+  def apply(router: RouterCtl[Loc], proxy: ModelProxy[RootModel]): Unmounted[Props, State, Unit] =
+    component(Props(router, proxy))
 }

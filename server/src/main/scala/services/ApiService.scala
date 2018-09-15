@@ -1,28 +1,24 @@
 package services
 
-import java.util.{UUID, Date}
+import java.util.{Date, UUID}
+
+import lehtikierto.shared.{MagazineId, ShareId, SubscriptionId, _}
 
 import scala.collection.mutable
-
-import lehtikierto.shared._
-import scala.collection.mutable.HashMap
-import lehtikierto.shared.SubscriptionId
-import lehtikierto.shared.MagazineId
-import lehtikierto.shared.ShareId
 
 class ApiService extends Api {
   val idgen: () => String = (() => {
     var counter = 1
     () => {
       counter += 1
-      counter.toString()
+      counter.toString
     }
   })()
   
   object DummyUsers {
-    val teppo = User("Teppo");
-    val liisa = User("Liisa");
-    val jaakko = User("Jaakko");
+    val teppo = User("Teppo")
+    val liisa = User("Liisa")
+    val jaakko = User("Jaakko")
   }
   
   object DummyMagazines {
@@ -46,9 +42,9 @@ class ApiService extends Api {
       DummyMagazines.vv
   )
   
-  val allSubscriptions: mutable.Map[SubscriptionId, Subscription] = mutable.Map() ++ (Seq(
+  val allSubscriptions: mutable.Map[SubscriptionId, Subscription] = mutable.Map() ++ Seq(
       Subscription(SubscriptionId(idgen()), DummyUsers.teppo, DummyMagazines.yl)
-  ).map(s => (s.id, s)).toMap)
+  ).map(s => (s.id, s)).toMap
 
   val allShares = Seq(DummyShares.teppoKp, DummyShares.liisaKp, DummyShares.liisaYl)
   
@@ -69,29 +65,27 @@ class ApiService extends Api {
   override def getSubscriptions(): Seq[Subscription] = {
     Thread.sleep(900)
     user match {
-      case Some(user) => allSubscriptions.filter(p => p._2.user == user).map(_._2).toSeq
+      case Some(u) => allSubscriptions.filter(p => p._2.user == u).values.toSeq
       case _ => Nil
     }
   }
   
   override def addSubscription(magazineId: MagazineId): Subscription = {
     user match {
-      case Some(user) => {
+      case Some(u) =>
         allSubscriptions.values.find(_.magazine.id == magazineId) match {
-          case None => {
-            val subscription = new Subscription(SubscriptionId(idgen()), user, allMagazines.find(_.id.equals(magazineId)).get)
+          case None =>
+            val subscription = Subscription(SubscriptionId(idgen()), u, allMagazines.find(_.id.equals(magazineId)).get)
             allSubscriptions(subscription.id) = subscription
             subscription
-          }
           case Some(subscription) => subscription
         }
-      }
     }
   }
   
   override def unsubscribe(id: SubscriptionId): Boolean = {
     user match {
-      case Some(user) => allSubscriptions.remove(id) match {
+      case Some(_) => allSubscriptions.remove(id) match {
         case Some(_) => true
         case _ => false
       }
@@ -102,7 +96,7 @@ class ApiService extends Api {
   override def getShares(): Seq[Share] = {
     Thread.sleep(300)
     user match {
-      case Some(user) => allShares.filter(_.user == user)
+      case Some(u) => allShares.filter(_.user == u)
       case _ => Nil
     }
   }

@@ -4,12 +4,11 @@ import diode.react.ModelProxy
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
-import lehtikierto.client.SPAMain.{DashboardLoc, Loc, TodoLoc, ShareLoc}
+import lehtikierto.client.SPAMain.{DashboardLoc, Loc, ShareLoc, TodoLoc}
 import lehtikierto.client.components.Bootstrap.CommonStyle
 import lehtikierto.client.components.Icon._
 import lehtikierto.client.components._
 import lehtikierto.client.services._
-
 import scalacss.ScalaCssReact._
 
 object MainMenu {
@@ -18,7 +17,7 @@ object MainMenu {
 
   case class Props(router: RouterCtl[Loc], currentLoc: Loc, proxy: ModelProxy[Option[Int]])
 
-  private case class MenuItem(idx: Int, label: (Props) => VdomNode, icon: Icon, location: Loc)
+  private case class MenuItem(idx: Int, label: Props => VdomNode, icon: Icon, location: Loc)
 
   // build the Todo menu item, showing the number of open todos
   private def buildTodoMenu(props: Props): VdomElement = {
@@ -36,11 +35,11 @@ object MainMenu {
   )
 
   private class Backend($: BackendScope[Props, Unit]) {
-    def mounted(props: Props) =
+    def mounted(props: Props): Callback =
       // dispatch a message to refresh the todos
       Callback.when(props.proxy.value.isEmpty)(props.proxy.dispatchCB(RefreshTodos))
 
-    def render(props: Props) = {
+    def render(props: Props): VdomElement = {
       <.ul(bss.navbar)(
         // build a list of menu items
         menuItems.toVdomArray(item =>
