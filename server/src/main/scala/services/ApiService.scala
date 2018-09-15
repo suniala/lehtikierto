@@ -15,7 +15,7 @@ class ApiService extends Api {
     var counter = 1
     () => {
       counter += 1
-      counter.toString()
+      counter.toString
     }
   })()
   
