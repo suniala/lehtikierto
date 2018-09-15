@@ -79,7 +79,7 @@ class ApiService extends Api {
       case Some(u) =>
         allSubscriptions.values.find(_.magazine.id == magazineId) match {
           case None =>
-            val subscription = new Subscription(SubscriptionId(idgen()), u, allMagazines.find(_.id.equals(magazineId)).get)
+            val subscription = Subscription(SubscriptionId(idgen()), u, allMagazines.find(_.id.equals(magazineId)).get)
             allSubscriptions(subscription.id) = subscription
             subscription
           case Some(subscription) => subscription

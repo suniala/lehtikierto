@@ -80,7 +80,7 @@ private[logger] object Log4JavaScript extends js.Object {
 
 class L4JSLogger(jsLogger:JSLogger) extends Logger {
 
-  private var ajaxAppender:AjaxAppender = null
+  private var ajaxAppender:AjaxAppender = _
 
   private def undefOrError(e:Exception):js.UndefOr[js.Error] = {
     if(e == null)

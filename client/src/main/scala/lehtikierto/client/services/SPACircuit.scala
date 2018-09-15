@@ -66,7 +66,7 @@ class MagazineHandler[M](modelRW: ModelRW[M, Pot[Seq[Magazine]]]) extends Action
 
   override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateMagazines =>
-      val updateF = action.effect(AjaxClient[Api].getAllMagazines().call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].getAllMagazines().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
@@ -77,7 +77,7 @@ class SubscriptionHandler[M](modelRW: ModelRW[M, Pot[Seq[Subscription]]]) extend
 
   override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateSubscriptions =>
-      val updateF = action.effect(AjaxClient[Api].getSubscriptions().call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].getSubscriptions().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
     case AddSubscription(magazineId) =>
@@ -92,7 +92,7 @@ class ShareHandler[M](modelRW: ModelRW[M, Pot[Seq[Share]]]) extends ActionHandle
 
   override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateShares =>
-      val updateF = action.effect(AjaxClient[Api].getShares().call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].getShares().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
@@ -143,7 +143,7 @@ class MotdHandler[M](modelRW: ModelRW[M, Pot[String]]) extends ActionHandler(mod
 
   override def handle: PartialFunction[Any, ActionResult[M]] = {
     case action: UpdateMotd =>
-      val updateF = action.effect(AjaxClient[Api].welcomeMsg("User X").call())(identity _)
+      val updateF = action.effect(AjaxClient[Api].welcomeMsg("User X").call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
   }
