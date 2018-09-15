@@ -96,7 +96,7 @@ object SmartPanel {
 
   private val component = ScalaComponent.builder[Props]("SmartPanel")
     .renderPC((_, p, c) => {
-      val allPreviousPhasesDefined = !p.phases.takeWhile(_ != p.curr).find(!p.phaseResolver(_)).isDefined
+      val allPreviousPhasesDefined = p.phases.takeWhile(_ != p.curr).forall(p.phaseResolver(_))
       val isCurrDefined = p.phaseResolver(p.curr)
       
       Panel(

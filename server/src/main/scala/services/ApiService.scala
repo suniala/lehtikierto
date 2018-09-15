@@ -69,7 +69,7 @@ class ApiService extends Api {
   override def getSubscriptions(): Seq[Subscription] = {
     Thread.sleep(900)
     user match {
-      case Some(user) => allSubscriptions.filter(p => p._2.user == user).map(_._2).toSeq
+      case Some(user) => allSubscriptions.filter(p => p._2.user == user).values.toSeq
       case _ => Nil
     }
   }
