@@ -55,7 +55,7 @@ class UserHandler[M](modelRW: ModelRW[M, Pot[User]]) extends ActionHandler(model
       effectOnly(Effect(AjaxClient[Api].getUser().call().map(ReceiveUser)))
     case ReceiveUser(user) =>
       updated(user match {
-        case Some(user) => Ready(user)
+        case Some(u) => Ready(u)
         case _ => Empty
       })
   }

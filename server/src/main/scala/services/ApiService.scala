@@ -69,17 +69,17 @@ class ApiService extends Api {
   override def getSubscriptions(): Seq[Subscription] = {
     Thread.sleep(900)
     user match {
-      case Some(user) => allSubscriptions.filter(p => p._2.user == user).values.toSeq
+      case Some(u) => allSubscriptions.filter(p => p._2.user == u).values.toSeq
       case _ => Nil
     }
   }
   
   override def addSubscription(magazineId: MagazineId): Subscription = {
     user match {
-      case Some(user) =>
+      case Some(u) =>
         allSubscriptions.values.find(_.magazine.id == magazineId) match {
           case None => {
-            val subscription = new Subscription(SubscriptionId(idgen()), user, allMagazines.find(_.id.equals(magazineId)).get)
+            val subscription = new Subscription(SubscriptionId(idgen()), u, allMagazines.find(_.id.equals(magazineId)).get)
             allSubscriptions(subscription.id) = subscription
             subscription
           }
@@ -90,7 +90,7 @@ class ApiService extends Api {
   
   override def unsubscribe(id: SubscriptionId): Boolean = {
     user match {
-      case Some(user) => allSubscriptions.remove(id) match {
+      case Some(u) => allSubscriptions.remove(id) match {
         case Some(_) => true
         case _ => false
       }
@@ -101,7 +101,7 @@ class ApiService extends Api {
   override def getShares(): Seq[Share] = {
     Thread.sleep(300)
     user match {
-      case Some(user) => allShares.filter(_.user == user)
+      case Some(u) => allShares.filter(_.user == u)
       case _ => Nil
     }
   }
