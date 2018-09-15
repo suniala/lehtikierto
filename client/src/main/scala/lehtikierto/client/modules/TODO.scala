@@ -1,10 +1,10 @@
 package lehtikierto.client.modules
 
+import diode.data.Pot
 import diode.react.ReactPot._
 import diode.react._
-import diode.data.Pot
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.component.Scala.{Component, Unmounted}
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.client.components._

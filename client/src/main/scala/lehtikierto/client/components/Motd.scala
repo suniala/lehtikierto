@@ -1,8 +1,8 @@
 package lehtikierto.client.components
 
+import diode.data.Pot
 import diode.react.ReactPot._
 import diode.react._
-import diode.data.Pot
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._

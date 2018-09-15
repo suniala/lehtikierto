@@ -1,14 +1,14 @@
 package lehtikierto.client.components
 
+import diode.data.Pot
 import diode.react.ReactPot._
 import diode.react._
-import diode.data.Pot
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.components.Bootstrap._
-import lehtikierto.shared.Share
 import lehtikierto.client.services.UpdateShares
+import lehtikierto.shared.Share
 
 object ShareList {
   private val ShareList = ScalaComponent.builder[ModelProxy[Pot[Seq[Share]]]]("ShareList")

@@ -1,10 +1,10 @@
 package lehtikierto.client.components
 
 import japgolly.univeq.UnivEq
-import lehtikierto.client.components.Bootstrap.CommonStyle
 import lehtikierto.client.CssSettings._
-import scalacss.internal.mutable
+import lehtikierto.client.components.Bootstrap.CommonStyle
 import lehtikierto.client.components.Bootstrap.CommonStyle._
+import scalacss.internal.mutable
 
 class BootstrapStyles(implicit r: mutable.Register) extends StyleSheet.Inline()(r) {
 

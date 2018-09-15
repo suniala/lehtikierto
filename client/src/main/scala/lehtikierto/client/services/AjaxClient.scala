@@ -1,14 +1,10 @@
 package lehtikierto.client.services
 
+import org.scalajs.dom
+import upickle.{Js, Reader, Writer, json}
+
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
-import org.scalajs.dom
-
-import upickle.Js
-import upickle.Reader
-import upickle.Writer
-import upickle.json
 
 object AjaxClient extends autowire.Client[Js.Value, Reader, Writer] {
   override def doCall(req: Request): Future[Js.Value] = {

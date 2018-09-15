@@ -1,14 +1,10 @@
 package services
 
-import java.util.{UUID, Date}
+import java.util.{Date, UUID}
+
+import lehtikierto.shared.{MagazineId, ShareId, SubscriptionId, _}
 
 import scala.collection.mutable
-
-import lehtikierto.shared._
-import scala.collection.mutable.HashMap
-import lehtikierto.shared.SubscriptionId
-import lehtikierto.shared.MagazineId
-import lehtikierto.shared.ShareId
 
 class ApiService extends Api {
   val idgen: () => String = (() => {

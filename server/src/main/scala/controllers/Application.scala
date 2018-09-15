@@ -1,13 +1,13 @@
 package controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.google.inject.Inject
 import lehtikierto.shared.Api
-import play.api.Configuration
-import play.api.Environment
+import play.api.{Configuration, Environment}
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.ApiService
 import upickle.Js
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Router extends autowire.Server[Js.Value, upickle.Reader, upickle.Writer] {
   def read[R: upickle.Reader](p: Js.Value): R = upickle.readJs[R](p)

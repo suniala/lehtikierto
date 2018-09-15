@@ -1,20 +1,16 @@
 package lehtikierto.client
 
 import diode.react.{ModelProxy, ReactConnectProxy}
-import japgolly.scalajs.react.BackendScope
-import japgolly.scalajs.react.ScalaComponent
-import japgolly.scalajs.react.extra.router.Resolution
-import japgolly.scalajs.react.extra.router.RouterCtl
-import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.{BackendScope, Callback, ScalaComponent}
+import japgolly.scalajs.react.extra.router.{Resolution, RouterCtl}
 import japgolly.scalajs.react.vdom.VdomElement
+import japgolly.scalajs.react.vdom.html_<^._
 import lehtikierto.client.SPAMain.Loc
 import lehtikierto.client.components.GlobalStyles
 import lehtikierto.client.modules.MainMenu
-import lehtikierto.client.services.SPACircuit
+import lehtikierto.client.services.{FetchUser, SPACircuit}
 import lehtikierto.shared.User
 import scalacss.ScalaCssReact.scalacssStyleaToTagMod
-import lehtikierto.client.services.FetchUser
-import japgolly.scalajs.react.Callback
 
 object Layout {
   // shorthand for styles

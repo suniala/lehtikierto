@@ -1,20 +1,16 @@
 package lehtikierto.client.services
 
+import java.util.concurrent.TimeUnit
+
 import autowire._
 import diode._
 import diode.data._
-import diode.util._
 import diode.react.ReactConnector
-import lehtikierto.shared.{Api, TodoItem}
-
-import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-import lehtikierto.shared.{Magazine, Share, Subscription, User}
+import diode.util._
+import lehtikierto.shared._
 
 import scala.concurrent.duration.FiniteDuration
-import java.util.concurrent.TimeUnit
-
-import lehtikierto.shared.SubscriptionId
-import lehtikierto.shared.MagazineId
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
 // Actions
 case object FetchUser extends Action

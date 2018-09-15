@@ -4,12 +4,11 @@ import diode.react.ModelProxy
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
-import lehtikierto.client.SPAMain.{DashboardLoc, Loc, TodoLoc, ShareLoc}
+import lehtikierto.client.SPAMain.{DashboardLoc, Loc, ShareLoc, TodoLoc}
 import lehtikierto.client.components.Bootstrap.CommonStyle
 import lehtikierto.client.components.Icon._
 import lehtikierto.client.components._
 import lehtikierto.client.services._
-
 import scalacss.ScalaCssReact._
 
 object MainMenu {

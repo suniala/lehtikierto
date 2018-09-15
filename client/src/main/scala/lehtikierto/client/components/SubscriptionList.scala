@@ -1,16 +1,15 @@
 package lehtikierto.client.components
 
+import diode.data.Pot
 import diode.react.ReactPot._
 import diode.react._
-import diode.data.Pot
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
-import scalacss.ScalaCssReact._
 import lehtikierto.client.components.Bootstrap._
+import lehtikierto.client.services.{DeleteSubscription, UpdateSubscriptions}
 import lehtikierto.shared.Subscription
-import lehtikierto.client.services.UpdateSubscriptions
-import lehtikierto.client.services.DeleteSubscription
+import scalacss.ScalaCssReact._
 
 object SubscriptionList {
   @inline private def bss = GlobalStyles.bootstrapStyles

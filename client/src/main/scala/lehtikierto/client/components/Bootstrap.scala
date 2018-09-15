@@ -3,11 +3,11 @@ package lehtikierto.client.components
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
+import lehtikierto.client.CssSettings._
+import scalacss.ScalaCssReact._
 
 import scala.language.implicitConversions
 import scala.scalajs.js
-import scalacss.ScalaCssReact._
-import lehtikierto.client.CssSettings._
 
 /**
  * Common Bootstrap components for scalajs-react
