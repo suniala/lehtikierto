@@ -20,9 +20,9 @@ class ApiService extends Api {
   })()
   
   object DummyUsers {
-    val teppo = User("Teppo");
-    val liisa = User("Liisa");
-    val jaakko = User("Jaakko");
+    val teppo = User("Teppo")
+    val liisa = User("Liisa")
+    val jaakko = User("Jaakko")
   }
   
   object DummyMagazines {
@@ -46,9 +46,9 @@ class ApiService extends Api {
       DummyMagazines.vv
   )
   
-  val allSubscriptions: mutable.Map[SubscriptionId, Subscription] = mutable.Map() ++ (Seq(
+  val allSubscriptions: mutable.Map[SubscriptionId, Subscription] = mutable.Map() ++ Seq(
       Subscription(SubscriptionId(idgen()), DummyUsers.teppo, DummyMagazines.yl)
-  ).map(s => (s.id, s)).toMap)
+  ).map(s => (s.id, s)).toMap
 
   val allShares = Seq(DummyShares.teppoKp, DummyShares.liisaKp, DummyShares.liisaYl)
   
@@ -76,7 +76,7 @@ class ApiService extends Api {
   
   override def addSubscription(magazineId: MagazineId): Subscription = {
     user match {
-      case Some(user) => {
+      case Some(user) =>
         allSubscriptions.values.find(_.magazine.id == magazineId) match {
           case None => {
             val subscription = new Subscription(SubscriptionId(idgen()), user, allMagazines.find(_.id.equals(magazineId)).get)
@@ -85,7 +85,6 @@ class ApiService extends Api {
           }
           case Some(subscription) => subscription
         }
-      }
     }
   }
   

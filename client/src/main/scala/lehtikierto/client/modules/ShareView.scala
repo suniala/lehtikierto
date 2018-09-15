@@ -12,7 +12,7 @@ import lehtikierto.client.services._
 import lehtikierto.shared._
 import scalacss.ScalaCssReact._
 import diode.NoAction
-import japgolly.scalajs.react.component.Scala.{Unmounted}
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.component.builder.Builder.Step1
 import org.scalajs.dom.html.Div
 
@@ -76,7 +76,7 @@ object ShareView {
     }
   }
 
-  def showIfGiven(option: Option[_]): (VdomNode) => VdomNode =
+  def showIfGiven(option: Option[_]): VdomNode => VdomNode =
     (child: VdomNode) => option match {
       case Some(_) => child
       case _       => VdomArray.empty()
@@ -92,7 +92,7 @@ object ShareView {
 }
 
 object SmartPanel {
-  case class Props(phaseResolver: (ShareView.Phase) => Boolean, phases: Seq[ShareView.Phase], curr: ShareView.Phase, heading: String, style: CommonStyle.Value = CommonStyle.default)
+  case class Props(phaseResolver: ShareView.Phase => Boolean, phases: Seq[ShareView.Phase], curr: ShareView.Phase, heading: String, style: CommonStyle.Value = CommonStyle.default)
 
   private val component = ScalaComponent.builder[Props]("SmartPanel")
     .renderPC((_, p, c) => {

@@ -18,7 +18,7 @@ object MainMenu {
 
   case class Props(router: RouterCtl[Loc], currentLoc: Loc, proxy: ModelProxy[Option[Int]])
 
-  private case class MenuItem(idx: Int, label: (Props) => VdomNode, icon: Icon, location: Loc)
+  private case class MenuItem(idx: Int, label: Props => VdomNode, icon: Icon, location: Loc)
 
   // build the Todo menu item, showing the number of open todos
   private def buildTodoMenu(props: Props): VdomElement = {
