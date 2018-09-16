@@ -69,7 +69,12 @@ object ShareView {
         $.modState(s => s.copy(editNumber = Option(text)))
       }
 
-      def submitForm(): Callback = {
+      def submitNumber(): Callback = {
+        $.modState(s => s.copy(number = s.editNumber, editNumber = None))
+      }
+
+      def submit(): Callback = {
+        // TODO: send action
         $.modState(s => s.copy(number = s.editNumber, editNumber = None))
       }
 
@@ -89,9 +94,10 @@ object ShareView {
             <.input.text(bss.formControl, ^.id := "number", ^.value := s.editNumber.getOrElse(""),
               ^.placeholder := "Kirjoita lehden numero tähän", ^.onChange ==> updateNumber)),
             <.div(bss.pullRight,
-              <.span(Button(Button.Props(submitForm(), disabled = s.editNumber.isEmpty), "Valmis")))),
+              <.span(Button(Button.Props(submitNumber(), disabled = s.editNumber.isEmpty), "Valmis")))),
           <.div(bss.pullRight,
-            <.span(Routes.link(DashboardLoc)("Peruuta")))
+            <.span(^.className := "button-spacing", Routes.link(DashboardLoc)("Peruuta")),
+            <.span(Button(Button.Props(submit() >> Routes.go(DashboardLoc), disabled = s.number.isEmpty), "Jaa lehti")))
       )
     }
   }

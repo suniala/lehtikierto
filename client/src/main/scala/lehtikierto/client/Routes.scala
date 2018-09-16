@@ -1,6 +1,7 @@
 package lehtikierto.client
 
 import diode.react.{ReactConnectProps, ReactConnectProxy}
+import japgolly.scalajs.react.Callback
 import japgolly.scalajs.react.component.Generic
 import japgolly.scalajs.react.extra.router.{BaseUrl, Redirect, Resolution, Router, RouterConfig, RouterConfigDsl, RouterCtl}
 import japgolly.scalajs.react.vdom.html_<^
@@ -38,4 +39,6 @@ object Routes {
   def router(): Router[Loc] = routerAndCtl._1
 
   def link(loc: Loc): html_<^.VdomTagOf[Anchor] = routerAndCtl._2.link(loc)
+
+  def go(loc: Loc): Callback = routerAndCtl._2.set(loc)
 }
