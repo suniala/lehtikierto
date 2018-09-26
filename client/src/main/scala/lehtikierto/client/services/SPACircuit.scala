@@ -29,6 +29,7 @@ case class DeleteSubscription(id: SubscriptionId) extends Action
 case class UpdateShares(potResult: Pot[Seq[Share]] = Empty) extends PotAction[Seq[Share], UpdateShares] {
   override def next(value: Pot[Seq[Share]]) = UpdateShares(value)
 }
+case class AddShare(number: Number) extends Action
 
 case class RootModel(user: Pot[User], magazines: Pot[Seq[Magazine]], subscriptions: Pot[Seq[Subscription]], shares: Pot[Seq[Share]])
 
@@ -78,6 +79,8 @@ class ShareHandler[M](modelRW: ModelRW[M, Pot[Seq[Share]]]) extends ActionHandle
       val updateF = action.effect(AjaxClient[Api].getShares().call())(identity)
       // Handle with a handler that does progress updates every n milliseconds.
       action.handleWith(this, updateF)(PotAction.handler(FiniteDuration(100, TimeUnit.MILLISECONDS)))
+    case AddShare(number) =>
+      effectOnly(Effect(AjaxClient[Api].addShare(number).call().map(_ => UpdateShares())))
   }
 }
 

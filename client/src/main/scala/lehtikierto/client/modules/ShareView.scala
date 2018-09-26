@@ -73,10 +73,8 @@ object ShareView {
         $.modState(s => s.copy(number = s.editNumber, editNumber = None))
       }
 
-      def submit(): Callback = {
-        // TODO: send action
-        $.modState(s => s.copy(number = s.editNumber, editNumber = None))
-      }
+      val submitCB = Callback(proxy.dispatchNow(AddShare(Number(None, s.magazine.get, s.year.get, s.number.get)))) >>
+        Routes.go(DashboardLoc)
 
       <.div(
         PhasePanel(
@@ -97,7 +95,7 @@ object ShareView {
               <.span(Button(Button.Props(submitNumber(), disabled = s.editNumber.isEmpty), "Valmis")))),
           <.div(bss.pullRight,
             <.span(^.className := "button-spacing", Routes.link(DashboardLoc)("Peruuta")),
-            <.span(Button(Button.Props(submit() >> Routes.go(DashboardLoc), disabled = s.number.isEmpty), "Jaa lehti")))
+            <.span(Button(Button.Props(submitCB, disabled = s.number.isEmpty), "Jaa lehti")))
       )
     }
   }

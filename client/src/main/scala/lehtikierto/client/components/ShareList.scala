@@ -13,11 +13,11 @@ import lehtikierto.shared.Share
 object ShareList {
   private val ShareList = ScalaComponent.builder[ModelProxy[Pot[Seq[Share]]]]("ShareList")
     .render_P { proxy =>
-      Panel(Panel.Props("Jakamani lehdet"),
+      Panel(Panel.Props("Jakamani numerot"),
         proxy().renderPending(_ => <.p("Ladataan...")),
-        proxy().renderFailed(_ => <.p("Jaettujen lehtien lataaminen epäonnistui!")),
+        proxy().renderFailed(_ => <.p("Jaettujen numeroiden lataaminen epäonnistui!")),
         proxy().renderReady(m => <.ul(m.toTagMod(
-            Share => <.li(Share.magazine.name))))
+            Share => <.li(s"${Share.number.magazine.name} ${Share.number.year} ${Share.number.number}"))))
       )
     }
     .componentDidMount(scope =>

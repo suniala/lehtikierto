@@ -11,4 +11,5 @@ trait Api {
   def unsubscribe(id: SubscriptionId): Boolean
   
   def getShares(): Seq[Share]
+  def addShare(number: Number): Share
 }
