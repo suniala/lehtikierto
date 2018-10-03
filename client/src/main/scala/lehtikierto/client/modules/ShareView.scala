@@ -54,24 +54,22 @@ object ShareView {
         <.li(
           bss.listGroup.item,
           <.span(item.name),
-          Button(Button.Props($.modState(s => s.copy(magazine = Some(item))), addStyles = Seq(bss.pullRight, bss.buttonXS)), "Valitse"))
+          Button(Button.Props($.modState(_.copy(magazine = Some(item))), addStyles = Seq(bss.pullRight, bss.buttonXS)), "Valitse"))
       }
 
       def renderYear(year: Int) = {
         <.li(
           bss.listGroup.item,
           <.span(year),
-          Button(Button.Props($.modState(s => s.copy(year = Some(year))), addStyles = Seq(bss.pullRight, bss.buttonXS)), "Valitse"))
+          Button(Button.Props($.modState(_.copy(year = Some(year))), addStyles = Seq(bss.pullRight, bss.buttonXS)), "Valitse"))
       }
 
-      def updateNumber(e: ReactEventFromInput): CallbackTo[Unit] = {
+      def updateNumber(e: ReactEventFromInput): Callback = {
         val text = e.target.value
-        $.modState(s => s.copy(editNumber = Option(text)))
+        $.modState(_.copy(editNumber = Option(text)))
       }
 
-      def submitNumber(): Callback = {
-        $.modState(s => s.copy(number = s.editNumber, editNumber = None))
-      }
+      val submitNumberCB = $.modState(_.copy(number = s.editNumber, editNumber = None))
 
       val submitCB = Callback(proxy.dispatchNow(AddShare(Number(None, s.magazine.get, s.year.get, s.number.get)))) >>
         Routes.go(DashboardLoc)
@@ -92,7 +90,7 @@ object ShareView {
             <.input.text(bss.formControl, ^.id := "number", ^.value := s.editNumber.getOrElse(""),
               ^.placeholder := "Kirjoita lehden numero tähän", ^.onChange ==> updateNumber)),
             <.div(bss.pullRight,
-              <.span(Button(Button.Props(submitNumber(), disabled = s.editNumber.isEmpty), "Valmis")))),
+              <.span(Button(Button.Props(submitNumberCB, disabled = s.editNumber.isEmpty), "Valmis")))),
           <.div(bss.pullRight,
             <.span(^.className := "button-spacing", Routes.link(DashboardLoc)("Peruuta")),
             <.span(Button(Button.Props(submitCB, disabled = s.number.isEmpty), "Jaa lehti")))
