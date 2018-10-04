@@ -17,7 +17,8 @@ object Layout {
   @inline private def bss = GlobalStyles.bootstrapStyles
 
   case class Props(router: RouterCtl[Loc], res: Resolution[Loc], userProxy: ModelProxy[Option[User]])
-
+  val attrDataToggle = VdomAttr("data-toggle")
+  val attrDataTarget = VdomAttr("data-target")
   private class Backend($: BackendScope[Props, Unit]) {
     def mounted(props: Props): Callback =
       Callback.when(props.userProxy.value.isEmpty)(props.userProxy.dispatchCB(FetchUser))
@@ -30,8 +31,22 @@ object Layout {
           // here we use plain Bootstrap class names as these are specific to the top level layout defined here
           <.nav(^.className := "navbar navbar-inverse navbar-fixed-top",
             <.div(^.className := "container",
-              <.div(^.className := "navbar-header", <.span(^.className := "navbar-brand", "Lehtikierto, " + user.username)),
-              <.div(^.className := "collapse navbar-collapse",
+              <.div(^.className := "navbar-header",
+                <.button(
+                  ^.tpe := "button",
+                  ^.className := "navbar-toggle collapsed",
+                  attrDataToggle := "collapse",
+                  attrDataTarget := "#the-navbar-menu",
+                  ^.aria.expanded := "false",
+                  <.span(^.className := "sr-only", "Toggle navigation"),
+                  <.span(^.className := "icon-bar"),
+                  <.span(^.className := "icon-bar"),
+                  <.span(^.className := "icon-bar")
+                ),
+                <.span(^.className := "navbar-brand", "Lehtikierto, " + user.username)
+
+              ),
+              <.div(^.className := "collapse navbar-collapse", ^.id := "the-navbar-menu",
                 MainMenu(props.router, props.res.page),
                 <.ul(bss.navbar, bss.navbarRight)(<.li(<.a(^.href := "/logout", "kirjaudu ulos")))
               )
