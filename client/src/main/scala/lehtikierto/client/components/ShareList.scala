@@ -6,6 +6,8 @@ import diode.react._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
+import lehtikierto.client.Routes
+import lehtikierto.client.Routes.{ItemLoc, ShareStatusLoc}
 import lehtikierto.client.components.Bootstrap._
 import lehtikierto.client.services.UpdateShares
 import lehtikierto.shared.Share
@@ -17,7 +19,7 @@ object ShareList {
         proxy().renderPending(_ => <.p("Ladataan...")),
         proxy().renderFailed(_ => <.p("Jaettujen numeroiden lataaminen epäonnistui!")),
         proxy().renderReady(m => <.ul(m.toTagMod(
-            Share => <.li(s"${Share.number.magazine.name} ${Share.number.year} ${Share.number.number}"))))
+            Share => <.li(Routes.link(ItemLoc(1234))(s"${Share.number.magazine.name} ${Share.number.year} ${Share.number.number}")))))
       )
     }
     .componentDidMount(scope =>
