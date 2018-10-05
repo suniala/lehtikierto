@@ -1,11 +1,11 @@
 package lehtikierto.client
 
 import diode.react.{ReactConnectProps, ReactConnectProxy}
-import japgolly.scalajs.react.{Callback, _}
 import japgolly.scalajs.react.component.Generic
 import japgolly.scalajs.react.extra.router.{BaseUrl, Redirect, Resolution, Router, RouterConfig, RouterConfigDsl, RouterCtl}
 import japgolly.scalajs.react.vdom.html_<^
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.{Callback, _}
 import lehtikierto.client.modules.{Dashboard, ShareStatusView, ShareView}
 import lehtikierto.client.services.{RootModel, SPACircuit}
 import lehtikierto.shared.{ShareId, User}
@@ -67,7 +67,9 @@ object Routes {
       | dynamicRouteCT("#item" / int.caseClass[ItemLoc]) ~> dynRender(itemLoc(_))
       | dynamicRouteCT("#item" / int.caseClass[ShareStatusIntLoc]) ~> dynRender(shareStatusInt(_))
 //      | dynamicRouteCT("#jakook" / string("[0-9]+").caseClass[ShareStatusLoc]) ~> dynRender(shareStatusString(_))
-      | dynamicRouteCT("#jako" / string("[0-9]+").caseClass[ShareStatusLoc]) ~> dynRender(s => ShareStatusView(ShareId(s.id)))
+      // toimii
+//      | dynamicRouteCT("#jako" / string("[0-9]+").caseClass[ShareStatusLoc]) ~> dynRender(s => ShareStatusView(ShareId(s.id)))
+      | dynamicRouteCT("#jako" / string("[0-9]+").caseClass[ShareStatusLoc]) ~> dynRender(s => SPACircuit.wrap((m: RootModel) => m.shares)(p => ShareStatusView(ShareId(s.id), p)))
 //      | dynamicRouteCT("two" / int.caseClass[Module2]) ~> dynRender(m => <.h3(s"Module #2 @ ${m.i}"))
 //      | dynamicRouteCT("#jako" / string.caseClass[ShareStatusLoc]) ~> dynRender(shareStatusView(_.id))
 //      | dynamicRouteCT("#jako" / string.caseClass[ShareStatusLoc]) ~> dynRender(ShareStatusView(ShareId(_.id)))
