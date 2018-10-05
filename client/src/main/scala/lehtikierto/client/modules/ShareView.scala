@@ -22,17 +22,19 @@ object ShareView {
   case class State(magazine: Option[Magazine], year: Option[Int], number: Option[String], editNumber: Option[String])
 
   trait Phase {
-    def isDone(state: State): Boolean
+    def isDone(state: State): Boolean = field(state).isDefined
+    protected type FieldGetter = State => Option[_]
+    protected val field: FieldGetter
   }
 
   private val magazinePhase = new Phase() {
-    def isDone(state: State): Boolean = state.magazine.isDefined
+    override val field: FieldGetter = _.magazine
   }
   private val yearPhase = new Phase() {
-    def isDone(state: State): Boolean = state.year.isDefined
+    override val field: FieldGetter = _.year
   }
   private val numberPhase = new Phase() {
-    def isDone(state: State): Boolean = state.number.isDefined
+    override val field: FieldGetter = _.number
   }
   val phases = Seq(magazinePhase, yearPhase, numberPhase)
 
