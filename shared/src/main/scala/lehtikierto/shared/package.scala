@@ -14,4 +14,6 @@ package object shared {
 
   case class ShareId(id: String)
   case class Share(id: ShareId, user: User, number: Number)
+
+  case class ShareStatus(id: ShareId, sampleStatusInfo: String)
 }

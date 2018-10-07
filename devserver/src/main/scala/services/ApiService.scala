@@ -111,6 +111,14 @@ class ApiService extends Api {
     }
   }
 
+  override def getShareStatus(id: ShareId): ShareStatus = {
+    Thread.sleep(300)
+    user match {
+      case Some(u) => ShareStatus(id, "some status info")
+      case _ => throw new RuntimeException("share not found")
+    }
+  }
+
   private def getNumberOrAdd(candidateNumber: Number): Number = {
     val existingNumber = allNumbers.find(n => n.magazine.id == candidateNumber.magazine.id
       && n.year == candidateNumber.year && n.number == candidateNumber.number)

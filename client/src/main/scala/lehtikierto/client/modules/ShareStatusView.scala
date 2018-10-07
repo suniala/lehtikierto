@@ -8,6 +8,11 @@ import japgolly.scalajs.react.{BackendScope, Callback, ScalaComponent}
 import lehtikierto.client.services.UpdateShares
 import lehtikierto.shared.{Share, ShareId}
 
+/*
+ * TODO: ideas for implementation:
+ * 1. get share info via RefTo
+ * 2. get status info via Async Virtual Collections
+  */
 object ShareStatusView {
   case class Props(id: ShareId, proxy: ModelProxy[Pot[Seq[Share]]])
 
