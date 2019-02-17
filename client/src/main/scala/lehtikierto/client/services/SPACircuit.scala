@@ -7,6 +7,7 @@ import diode._
 import diode.data._
 import diode.react.ReactConnector
 import diode.util._
+import lehtikierto.client.logger._
 import lehtikierto.shared._
 
 import scala.concurrent.duration.FiniteDuration
@@ -31,14 +32,33 @@ case class UpdateShares(potResult: Pot[Seq[Share]] = Empty) extends PotAction[Se
 }
 case class AddShare(number: Number) extends Action
 
-case class RootModel(user: Pot[User], magazines: Pot[Seq[Magazine]], subscriptions: Pot[Seq[Subscription]], shares: Pot[Seq[Share]])
+case class FetchShareStatus(id: ShareId) extends Action
+case class ReceiveShareStatus(shareStatus: Option[ShareStatus]) extends Action
+
+case class RootModel(user: Pot[User], magazines: Pot[Seq[Magazine]], subscriptions: Pot[Seq[Subscription]],
+                     shares: Pot[Seq[Share]], shareStatus: Pot[ShareStatus])
 
 class UserHandler[M](modelRW: ModelRW[M, Pot[User]]) extends ActionHandler(modelRW) {
   override def handle: PartialFunction[Any, ActionResult[M]] = {
     case FetchUser =>
       effectOnly(Effect(AjaxClient[Api].getUser().call().map(ReceiveUser)))
-    case ReceiveUser(user) =>
+    case ReceiveUser(user) => {
       updated(user match {
+        case Some(u) => Ready(u)
+        case _ => Empty
+      })
+    }
+  }
+}
+
+class ShareStatusHandler[M](modelRW: ModelRW[M, Pot[ShareStatus]]) extends ActionHandler(modelRW) {
+  override def handle: PartialFunction[Any, ActionResult[M]] = {
+    case FetchShareStatus(id) =>
+      // TODO: progress update
+      effectOnly(Effect(AjaxClient[Api].getShareStatus(id).call().map(ReceiveShareStatus)))
+    case ReceiveShareStatus(shareStatus) =>
+      log.info("got shareStatus" + shareStatus)
+      updated(shareStatus match {
         case Some(u) => Ready(u)
         case _ => Empty
       })
@@ -87,12 +107,13 @@ class ShareHandler[M](modelRW: ModelRW[M, Pot[Seq[Share]]]) extends ActionHandle
 // Application circuit
 object SPACircuit extends Circuit[RootModel] with ReactConnector[RootModel] {
   // initial application model
-  override protected def initialModel = RootModel(Empty, Empty, Empty, Empty)
+  override protected def initialModel = RootModel(Empty, Empty, Empty, Empty, Empty)
   // combine all handlers into one
   override protected val actionHandler: SPACircuit.HandlerFunction = composeHandlers(
     new UserHandler(zoomRW(_.user)((m, v) => m.copy(user = v))),
     new MagazineHandler(zoomRW(_.magazines)((m, v) => m.copy(magazines = v))),
     new SubscriptionHandler(zoomRW(_.subscriptions)((m, v) => m.copy(subscriptions = v))),
-    new ShareHandler(zoomRW(_.shares)((m, v) => m.copy(shares = v)))
+    new ShareHandler(zoomRW(_.shares)((m, v) => m.copy(shares = v))),
+    new ShareStatusHandler(zoomRW(_.shareStatus)((m, v) => m.copy(shareStatus = v)))
   )
 }

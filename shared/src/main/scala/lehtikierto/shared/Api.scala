@@ -13,5 +13,5 @@ trait Api {
   def getShares(): Seq[Share]
   def addShare(number: Number): Share
 
-  def getShareStatus(id: ShareId): ShareStatus
+  def getShareStatus(id: ShareId): Option[ShareStatus]
 }

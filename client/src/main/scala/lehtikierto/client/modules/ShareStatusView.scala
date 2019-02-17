@@ -2,37 +2,35 @@ package lehtikierto.client.modules
 
 import diode.data.Pot
 import diode.react.ModelProxy
+import diode.react.ReactPot._
+import japgolly.scalajs.react.ScalaComponent
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.{BackendScope, Callback, ScalaComponent}
-import lehtikierto.client.services.UpdateShares
-import lehtikierto.shared.{Share, ShareId}
+import lehtikierto.client.components.Bootstrap.Panel
+import lehtikierto.client.services.{FetchShareStatus, ReceiveShareStatus}
+import lehtikierto.shared.{ShareId, ShareStatus}
 
-/*
- * TODO: ideas for implementation:
- * 1. get share info via RefTo
- * 2. get status info via Async Virtual Collections
-  */
 object ShareStatusView {
-  case class Props(id: ShareId, proxy: ModelProxy[Pot[Seq[Share]]])
+
+  case class Props(id: ShareId, proxy: ModelProxy[Pot[ShareStatus]])
 
   case class State()
 
-  class Backend($: BackendScope[Props, State]) {
-    def mounted(props: Props): Callback =
-      Callback.when(props.proxy().isEmpty)(props.proxy.dispatchCB(UpdateShares()))
-
-    def render(p: Props, s: State): VdomElement = {
-      <.span("Hep!")
-    }
-  }
-
   private val component = ScalaComponent.builder[Props]("ShareStatusView")
     .initialState(State())
-    .renderBackend[Backend]
-    .componentDidMount(scope => scope.backend.mounted(scope.props))
+    .render_P { props: Props =>
+      Panel(Panel.Props("Message of the day"),
+        props.proxy().renderPending(_ => <.p("Ladataan...")),
+        props.proxy().renderFailed(_ => <.p("Jaettujen numeroiden lataaminen epäonnistui!")),
+        props.proxy().renderReady(m => <.p("valmis: " + m.sampleStatusInfo))
+      )
+    }
+    .componentDidMount(scope => {
+      scope.props.proxy.dispatchCB(ReceiveShareStatus(None)) >>
+        scope.props.proxy.dispatchCB(FetchShareStatus(scope.props.id))
+    })
     .build
 
-  def apply(id: ShareId, proxy: ModelProxy[Pot[Seq[Share]]]): Unmounted[Props, State, Backend] =
+  def apply(id: ShareId, proxy: ModelProxy[Pot[ShareStatus]]): Unmounted[Props, State, Unit] =
     component(Props(id, proxy))
 }

@@ -40,7 +40,7 @@ object Routes {
     (staticRoute(root, DashboardLoc) ~> renderR(ctl => SPACircuit.wrap((m: RootModel) => m)(proxy => Dashboard(ctl, proxy)))
       | staticRoute("#jaa", ShareLoc) ~> renderR(_ => SPACircuit.wrap((m: RootModel) => m.magazines)(proxy => ShareView(proxy)))
       | dynamicRouteCT("#jako" / string("[0-9]+").caseClass[ShareStatusLoc]) ~>
-      /* */ dynRender(s => SPACircuit.wrap((m: RootModel) => m.shares)(p => ShareStatusView(ShareId(s.id), p)))
+      /* */ dynRender(s => SPACircuit.wrap((m: RootModel) => m.shareStatus)(p => ShareStatusView(ShareId(s.id), p)))
       ).notFound(redirectToPage(DashboardLoc)(Redirect.Replace))
   }.renderWith(layout)
 

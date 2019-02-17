@@ -32,6 +32,7 @@ class ApiService extends Api {
   
   object DummyShares {
     val teppoKp = Share(ShareId(idgen()), DummyUsers.teppo, DummyNumbers.kp1)
+    val teppoYl = Share(ShareId(idgen()), DummyUsers.teppo, DummyNumbers.yl1)
     val liisaKp = Share(ShareId(idgen()), DummyUsers.liisa, DummyNumbers.kp1)
     val liisaYl = Share(ShareId(idgen()), DummyUsers.liisa, DummyNumbers.yl1)
   }
@@ -49,7 +50,7 @@ class ApiService extends Api {
       Subscription(SubscriptionId(idgen()), DummyUsers.teppo, DummyMagazines.yl)
   ).map(s => (s.id, s)).toMap
 
-  val allShares = mutable.ArrayBuffer(DummyShares.teppoKp, DummyShares.liisaKp, DummyShares.liisaYl)
+  val allShares = mutable.ArrayBuffer(DummyShares.teppoKp, DummyShares.teppoYl, DummyShares.liisaKp, DummyShares.liisaYl)
 
   val allNumbers = mutable.ArrayBuffer(DummyNumbers.kp1, DummyNumbers.yl1)
 
@@ -111,10 +112,10 @@ class ApiService extends Api {
     }
   }
 
-  override def getShareStatus(id: ShareId): ShareStatus = {
-    Thread.sleep(300)
+  override def getShareStatus(id: ShareId): Option[ShareStatus] = {
+    Thread.sleep(800)
     user match {
-      case Some(u) => ShareStatus(id, "some status info")
+      case Some(u) => Some(ShareStatus(id, "some status info for shareId=" + id))
       case _ => throw new RuntimeException("share not found")
     }
   }
